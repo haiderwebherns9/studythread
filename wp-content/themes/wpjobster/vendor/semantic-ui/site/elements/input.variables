@@ -1,0 +1,6 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@downBorderColor : @primaryColor;
+@focusBorderColor : @primaryColor;

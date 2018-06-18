@@ -1,0 +1,10 @@
+.seller-notifications-title h1:before {
+	content: "\f0a1";
+	font-family: Icons;
+	font-size: 24px;
+	padding-right: 5px;
+}
+.seller-notifications-title h1{
+	font-size: 24px;
+	font-weight: 700;
+}

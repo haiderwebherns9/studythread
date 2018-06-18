@@ -1,0 +1,445 @@
+<?php
+if ( ! function_exists( 'wpj_header_body_class' ) ) {
+	function wpj_header_body_class(){
+		$body_class = '';
+		if (isset($_GET['jb_action'])&&$_GET['jb_action'] == 'purchase_this_widget') {
+			$body_class = 'widget-body';
+		}
+		return $body_class;
+	}
+}
+
+if ( ! function_exists( 'wpj_header_logo' ) ) {
+	function wpj_header_logo(){
+		$logo = get_theme_mod('site_logo');
+		if(empty($logo)) $logo = get_template_directory_uri().'/images/logo.png';
+
+		return $logo;
+	}
+}
+
+if ( ! function_exists( 'wpj_header_mobile_menu' ) ) {
+	function wpj_header_mobile_menu(){ ?>
+		<div class="new-menu responsive">
+			<div class="top-menu-responsive">
+				<div class="top-menu-wrapper-responsive">
+					<div class="cf main">
+						<div class="ui grid">
+							<div class="four wide column">
+								<?php echo wpj_header_mobile_menu_left(); ?>
+							</div>
+							<div class="eight wide column">
+								<div class="logo-holder-reponsive">
+									<a href="<?php echo home_url('/'); ?>"><img id="logo" src="<?php echo wpj_header_logo(); ?>" /></a>
+								</div>
+							</div>
+							<div class="four wide column">
+								<?php echo wpj_header_mobile_menu_right(); ?>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php wpjobster_get_currency(); ?>
+			<?php if (is_user_logged_in() && wpjobster_is_responsive()) { ?>
+			<div class="sub-menu-reponsive">
+				<div class="cf main">
+					<div class="ui grid">
+						<div class="seven wide column">
+							<div class="nh-icons cf">
+								<?php
+								echo wpj_header_mobile_menu_messages();
+								echo wpj_header_mobile_menu_notifications();
+								?>
+							</div>
+						</div>
+
+						<div class="nine wide column">
+							<?php echo wpj_header_mobile_menu_user_info(); ?>
+						</div>
+					</div>
+				</div>
+			</div>
+			<?php } ?>
+		</div>
+		<?php
+	}
+}
+
+if ( ! function_exists( 'wpj_header_secondary_menu' ) ) {
+	function wpj_header_secondary_menu(){
+		echo '<div class="nh-secondary-menu">';
+			wp_nav_menu(array(
+				'theme_location' => 'wpjobster_header_secondary_menu',
+				'container'      => '',
+				'menu_class'     => 'secondary-menu',
+				'fallback_cb'    => '')
+			);
+		echo '</div>';
+	}
+}
+
+if ( ! function_exists( 'wpj_header_language_selector' ) ) {
+	function wpj_header_language_selector(){
+		if (function_exists('qtranxf_generateLanguageSelectCode')) {
+			if (count(qtranxf_getSortedLanguages()) > 1 && wpjobster_multilanguage_allowed()) {
+				?>
+				<div>
+					<?php wpj_generate_language_select(); ?>
+				</div>
+				<?php
+			}
+		}
+	}
+}
+
+if ( ! function_exists( 'wpj_header_currency_selector' ) ) {
+	function wpj_header_currency_selector(){
+		global $wpjobster_currencies_array;
+		if (count($wpjobster_currencies_array) > 1) { ?>
+
+			<div>
+				<?php display_currency_select_main(); ?>
+			</div>
+
+		<?php }
+	}
+}
+
+if ( ! function_exists( 'wpj_header_messages' ) ) {
+	function wpj_header_messages(){ ?>
+		<div class="nh-icon nh-messages">
+			<?php
+			global $current_user;
+			$current_user = wp_get_current_user();
+			$uid = $current_user->ID;
+			$wpjobster_get_unread_number_messages = wpjobster_get_unread_number_messages($uid);
+			$priv_mess_id = get_option('wpjobster_my_account_priv_mess_page_id');
+			?>
+
+			<a class="nh-link1" href="<?php echo get_permalink($priv_mess_id); ?>">
+				<?php if($wpjobster_get_unread_number_messages > 0) { ?>
+					<div class="unread-label digits">
+						<?php echo $wpjobster_get_unread_number_messages; ?>
+					</div>
+				<?php } ?>
+			</a>
+
+			<div class="nh-tooltip">
+				<?php _e("Messages", "wpjobster"); ?>
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_notifications' ) ) {
+	function wpj_header_notifications(){ ?>
+		<div class="nh-icon nh-notifications">
+			<div class="nh-link1"><div id="unread-notify"></div></div>
+			<div class="nh-tooltip">
+				<?php _e("Notifications", "wpjobster"); ?>
+			</div>
+			<div class="nh-submenu nh-notifications-dropdown nh-notifications-count">
+			<script>
+			jQuery(window).ready(function($){
+				var notifications_ajax_load_callback = function(show_icon) {
+					//load notifications using ajax
+					//doing AJAX request
+					$.ajax({
+					  url:"<?php echo esc_url( get_template_directory_uri() ) . '/includes/payments/teachers-notifications.php'; ?>",
+					  beforeSend:function(){
+						$('.nh-notifications-dropdown').each(function(){
+							$(this).html('');
+							$(this).addClass('loading');
+						});
+					  },
+					  success:function(data){
+						 // console.log(data)
+						// do something with the return data if you have
+						// the return data could be a plain-text, or HTML, or JSON, or JSONP, depends on your needs, if you do ha
+						$('.nh-notifications-dropdown').each(function(){
+							$(this).html(data);
+							$(this).removeClass('loading');
+							$(".antiscroll-inner").mCustomScrollbar({
+								theme:"minimal-dark"
+							});
+							var notifications_count = $(".nh-notifications-dropdown.nh-notifications-count ul li").length;
+							if (notifications_count > 99) {
+								notifications_count = 99;
+							}
+
+							if (notifications_count > 0 && show_icon) {
+								$(".nh-notifications .nh-link").each(function(){
+									$(this).html('<div class="unread-label digits">' + notifications_count + '</div>');
+								});
+									$(".nh-notifications .nh-link1").each(function(){
+									$(this).html('<div class="unread-label digits">' + notifications_count + '</div>');
+								});
+							}
+						});
+					  }
+					});
+				};
+				<?php // if ( ! wpjobster_live_notifications_enabled() ) { ?>
+				$(document).ready(function() { notifications_ajax_load_callback(true); });
+				<?php //} ?>
+				$(".nh-notifications .nh-link1").each(function(){
+					$(this).click(notifications_ajax_load_callback);
+				});
+				
+			});
+			</script>
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_right_part' ) ) {
+	function wpj_header_right_part(){
+		global $current_user;
+		$current_user = wp_get_current_user();
+		if(is_user_logged_in()) { ?>
+
+			<div class="nh-user-notifications">
+				<div class="nh-icons cf">
+					<?php
+					echo wpj_header_messages();
+					echo wpj_header_notifications();
+					?>
+				</div>
+			</div>
+
+			<div class="nh-user-info nh-has-submenu nh-bigger">
+				<div class="nh-user-info">
+					<a href="<?php echo wpjobster_my_account_link(); ?>">
+						<div class="nh-user-left">
+							<img width="42" height="42" border="0" src="<?php echo wpjobster_get_avatar($current_user->ID,42,42); ?>" class="nh-user-img" />
+						</div>
+						<div class="nh-user-right">
+							<div class="nh-user-name">
+								<?php
+								$user_login_cut = $current_user->user_login;
+								if (mb_strlen($user_login_cut)>15) {
+									$user_login_cut = mb_substr($user_login_cut, 0, 15) . '...';
+								}
+								echo $user_login_cut; ?>
+							</div>
+							<?php if ( get_option( 'wpjobster_credits_enable' ) != 'no' ) { ?>
+								<style type="text/css">
+									.nh-user-name {
+										line-height: 20px;
+									}
+								</style>
+								<div class="nh-user-balance">
+									<?php $bal = wpjobster_get_credits($current_user->ID);
+										echo wpjobster_get_show_price($bal); ?>
+								</div>
+							<?php } ?>
+						</div>
+					</a>
+				</div>
+				<div class="nh-submenu nh-accordions">
+					<?php do_action( 'display_user_dropdown_links' ); ?>
+				</div>
+			</div>
+		<?php } else { ?>
+
+			<div>
+				<?php $menu_buttons = wpjobster_header_buttons();
+				if ( $menu_buttons ) {
+					foreach ( $menu_buttons as $btn ) { ?>
+						<a class="ui button <?php echo $btn['a_class']; ?>" href="<?php echo $btn['url']; ?>"><?php echo $btn['label']; ?></a>
+					<?php }
+				} ?>
+			</div>
+
+		<?php }
+	}
+}
+
+// HEADER BUTTONS
+if ( ! function_exists( 'wpjobster_header_buttons' ) ) {
+	function wpjobster_header_buttons(){
+		global $site_url_localized;
+
+		$buttons_list = array(
+			'login' => array(
+				'label' => __("Login","wpjobster"),
+				'url' => $site_url_localized . '/wp-login.php',
+				'a_class' => "login-link primary",
+			),
+			'register' => array(
+				'label' => __("Register","wpjobster"),
+				'url' => $site_url_localized . '/wp-login.php?action=register',
+				'a_class' => "register-link secondary",
+			),
+		);
+		$buttons_list = apply_filters( 'wpj_header_button_filter', $buttons_list );
+
+		return $buttons_list;
+	}
+}
+
+
+if ( ! function_exists( 'wpj_header_main_menu' ) ) {
+	function wpj_header_main_menu(){ ?>
+		<div class="ui segments middle-menu">
+			<div class="ui segment">
+				<?php
+
+					if( isset ( $_GET['jb_action'] ) && (
+						$_GET['jb_action'] == 'chat_box'
+						|| $_GET['jb_action'] == 'purchase_this'
+						|| $_GET['jb_action'] == 'feature_job'
+						|| $_GET['jb_action'] == 'badges'
+					) ){
+						$jb_action_set = 1;
+					}else{
+						$jb_action_set = 0;
+					}
+
+					$pages = array(
+						get_option( 'wpjobster_my_account_page_id', false ),
+						get_option( 'wpjobster_my_account_shopping_page_id', false ),
+						get_option( 'wpjobster_my_account_sales_page_id', false ),
+						get_option( 'wpjobster_my_account_payments_page_id', false ),
+						get_option( 'wpjobster_my_account_priv_mess_page_id', false ),
+						get_option( 'wpjobster_my_account_personal_info_page_id', false ),
+						get_option( 'wpjobster_my_account_reviews_page_id', false ),
+						get_option( 'wpjobster_my_requests_page_id', false ),
+						get_option( 'wpjobster_my_account_all_notifications_page_id', false ),
+						get_option( 'wpjobster_my_favorites_page_id', false ),
+					);
+
+					if( is_page( $pages ) || $jb_action_set == 1 ) {
+						wp_nav_menu(array(
+							'theme_location' => 'wpjobster_header_user_account_menu',
+							'container'      => '',
+							'menu_class'     => 'menu categories-here auto_cols',
+							'fallback_cb'    => 'link_to_menu_editor' )
+						);
+					} else {
+						wp_nav_menu(array(
+							'theme_location' => 'wpjobster_header_main_menu',
+							'container'      => '',
+							'menu_class'     => 'menu categories-here auto_cols',
+							'fallback_cb'    => 'link_to_menu_editor' )
+						);
+					}
+				?>
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_mobile_menu_left' ) ) {
+	function wpj_header_mobile_menu_left(){ ?>
+		<div class="row">
+			<div class="left-menu">
+				<div class="ui basic icon menu resp">
+					<a id="toggle" class="item resp">
+						<img src="<?php echo esc_url( get_template_directory_uri() ) ?>/images/burger-menu-icon.png" alt="" />
+					</a>
+				</div>
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_mobile_menu_right' ) ) {
+	function wpj_header_mobile_menu_right(){ ?>
+		<div class="row">
+			<div class="right-menu">
+				<div class="ui basic icon menu resp">
+					<a id="togglee" class="item resp">
+						<img src="<?php echo esc_url( get_template_directory_uri() ) ?>/images/grid-menu-icon.png" alt="" />
+					</a>
+				</div>
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_mobile_menu_messages' ) ) {
+	function wpj_header_mobile_menu_messages(){ ?>
+		<div class="nh-icon nh-messages">
+			<?php
+			global $current_user;
+			$current_user = wp_get_current_user();
+			$uid = $current_user->ID;
+			$wpjobster_get_unread_number_messages = get_user_meta( $uid, 'messages_number', true );
+			$priv_mess_id = get_option('wpjobster_my_account_priv_mess_page_id');
+			?>
+
+			<a class="nh-link nh-link1" href="<?php echo get_permalink($priv_mess_id); ?>">
+				<?php if($wpjobster_get_unread_number_messages > 0) { ?>
+					<div class="unread-label digits">
+						<?php echo $wpjobster_get_unread_number_messages; ?>
+					</div>
+				<?php } ?>
+			</a>
+
+			<div class="nh-tooltip">
+				<?php _e("Messages", "wpjobster"); ?>
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_mobile_menu_notifications' ) ) {
+	function wpj_header_mobile_menu_notifications(){ ?>
+		<div class="nh-icon nh-notifications">
+			<div class="nh-link nh-mobilelink"></div>
+			<div class="nh-tooltip">
+				<?php _e("Notifications", "wpjobster"); ?>
+			</div>
+			<div class="nh-submenu nh-notifications-dropdown">
+
+			</div>
+		</div>
+	<?php }
+}
+
+if ( ! function_exists( 'wpj_header_mobile_menu_user_info' ) ) {
+	function wpj_header_mobile_menu_user_info(){
+		global $current_user;
+		$current_user = wp_get_current_user();
+		?>
+		<div class="nh-user-info">
+			<a href="<?php echo wpjobster_my_account_link(); ?>">
+			<div class="nh-user-right">
+				<div class="nh-user-name">
+					<?php
+					$user_login_cut = $current_user->user_login;
+					if (mb_strlen($user_login_cut)>15) {
+						$user_login_cut = mb_substr($user_login_cut, 0, 15) . '...';
+					}
+					echo $user_login_cut; ?>
+				</div>
+				<?php if ( get_option( 'wpjobster_credits_enable' ) != 'no' ) { ?>
+					<div class="nh-user-balance">
+						<?php $bal = wpjobster_get_credits($current_user->ID);
+							echo wpjobster_get_show_price($bal); ?>
+					</div>
+				<?php } else { ?>
+					<style>
+						@media only screen and (max-width: 479px) {
+							.nh-user-name {
+								overflow: visible;
+								margin-top: 4px;
+							}
+							.nh-user-img {
+								margin-top: 7px;
+							}
+						}
+					</style>
+				<?php } ?>
+			</div>
+			<div class="nh-user-left">
+				<img width="42" height="42" border="0" src="<?php echo wpjobster_get_avatar($current_user->ID,42,42); ?>" class="nh-user-img" />
+			</div>
+			</a>
+		</div>
+	<?php }
+}
+

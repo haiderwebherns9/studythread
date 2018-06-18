@@ -1,0 +1,112 @@
+/* Sales report main page */
+.show-reports{
+	cursor: pointer;
+}
+.report-graph{
+	width: 100%;
+	height: 350px;
+	padding: 0 0 55px 0 !important;
+}
+.usual .report-graph div {
+	padding: 0;
+}
+.report-loader{
+	font-size: 30px !important;
+	width: 100% !important;
+	color: #ddd !important;
+}
+.graph-position{
+	width: 100%;
+	padding: 10px !important;
+	box-sizing: border-box;
+	height: 100%;
+}
+span#user_error_report {
+	vertical-align: -webkit-baseline-middle;
+	padding-left: 20px;
+	color: #ff0000;
+}
+#user-id-or-username {
+	width: 262px;
+	padding: 5px 10px;
+	margin: 0;
+}
+.widefat tbody tr:last-child > td {
+	border-top: 1px solid #e1e1e1;
+	padding: 10px 10px;
+}
+.sales-report h2.report-title {
+	text-align: center;
+	font-size: 23px;
+	margin-top: 30px;
+}
+td.td-right {
+	right: 10px;
+	position: relative;
+	text-align: right;
+}
+.btn-right{
+	float: right;
+	right: 5px;
+	position: relative;
+}
+.graph-range-arrow > i {
+	font-size: 20px;
+	font-weight: 700;
+}
+
+/* Summary table */
+#summary-table tr:nth-child(4) > td {
+	border-top: 1px solid #e1e1e1;
+}
+#summary-table tr > td:nth-child(4) {
+	border-right: 1px solid #e1e1e1;
+}
+/*#summary-table tr:nth-child(4) > td:last-child {
+	border-top: 0;
+}
+#summary-table tr:nth-child(4) > td:nth-child(4) {
+	border-right: 0;
+}*/
+
+/* Date ratepicker calendar */
+i.icon.arrow.left:before {
+	content: "<";
+	font-weight: bold;
+}
+i.icon.arrow.right:before {
+	content: ">";
+	font-weight: bold;
+}
+i.icon {
+	font-size: 1em;
+	display: inline-block;
+	opacity: 1;
+	margin: 0 .25rem 0 0;
+	width: 1.23em;
+	height: .9em;
+	font-family: Icons;
+	font-style: normal;
+	line-height: 1;
+	font-weight: 400;
+	text-decoration: inherit;
+	text-align: center;
+	speak: none;
+	font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+}
+i.arrow{
+	position: inherit;
+}
+i.icon.arrow:after{
+	position: inherit;
+	background-color: transparent;
+}
+
+span.csv-separator {
+	float: right;
+	line-height: 30px;
+	padding-right: 12px;
+}

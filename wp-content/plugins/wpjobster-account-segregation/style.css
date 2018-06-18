@@ -1,0 +1,107 @@
+/* Dropdown Select */
+.ui.dropdown.register-segregate {
+	font-family: Lato,'Helvetica Neue',Arial,Helvetica,sans-serif;
+	margin-bottom: 15px;
+	padding: .67857143em 1em;
+	font-size: 1em;
+	color: #C7C7CD;
+}
+.ajax-login-register-register-container select.ui.dropdown {
+	height: auto;
+}
+
+/* Account Confirmation Page */
+#account-confirmation {
+	max-width: 400px;
+	margin: 40px auto;
+	text-align: center;
+}
+#account-confirmation div#uploadifive-file_upload_cv {
+	margin: 0px auto;
+	width: 100% !important;
+}
+#uploadifive-file_upload_cv-queue{
+	margin-top: 36px;
+}
+#uploadifive-file_upload_cv-queue .uploadifive-queue-item:first-child {
+	margin-top: 40px;
+}
+.as_ac_uploader_wrapper {
+	background: #fbfbfb;
+	border: 1px dashed #bec3cc;
+	padding: 5px;
+}
+#account-confirmation .as_ac_btn {
+	margin: 0px auto;
+	float: none;
+}
+.btn.as_ac_linkedin,
+a.btn.as_ac_linkedin {
+	background: #1a85bc;
+	position: relative;
+	padding-left: 60px;
+	height: 60px;
+	line-height: 60px;
+}
+.btn.as_ac_linkedin:before {
+	content: "\f0e1";
+	width: 60px;
+	font-family: 'Icons';
+	left: 0;
+	position: absolute;
+	border-top-left-radius: 3px;
+	border-bottom-left-radius: 3px;
+	font-size: 22px;
+	color: #ffffff;
+	box-shadow: inset -10px 0px 20px -10px rgba(0, 0, 0, 0.25);
+}
+p.as_ac_2emb {
+	margin-bottom: 2em;
+}
+
+/* Sales Page */
+.wpj-as-pending-seller{
+	padding: 100px;
+	line-height: 1.5;
+}
+.wpj-as-pending-seller .wpj-as-title {
+	font-size: 56px;
+	font-weight: 700;
+}
+.wpj-as-pending-seller .wpj-as-subtitle {
+	font-size: 26px;
+	font-weight: 600;
+}
+.wpj-as-pending-seller .wpj-as-become-seller {
+	margin-top: 30px !important;
+}
+.wpj-as-pending-seller .wpj-as-description {
+	padding-top: 25px;
+	font-size: 16px;
+}
+.wpj-as-pending-seller .padding{
+	padding: 70px 100px 100px 100px !important;
+}
+
+/* Responsive */
+@media only screen and (max-width:991px) {
+	.wpj-as-pending-seller .padding {
+		padding: 30px 50px 50px 50px !important;
+	}
+}
+@media only screen and (max-width:767px) {
+	.wpj-as-pending-seller {
+		padding: 10px;
+	}
+}
+@media only screen and (max-width:479px) {
+	.wpj-as-pending-seller .wpj-as-title {
+		font-size: 32px;
+	}
+	.wpj-as-pending-seller .wpj-as-subtitle {
+		font-size: 22px;
+	}
+	.wpj-as-pending-seller {
+		line-height: 1.3;
+	}
+}

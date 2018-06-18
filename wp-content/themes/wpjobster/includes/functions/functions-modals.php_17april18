@@ -1,0 +1,702 @@
+<?php
+
+//---------------------------------------
+// Vacation Mode
+//---------------------------------------
+
+function wpj_vacation_mode_modal() {
+	global $current_user;
+	$current_user = wp_get_current_user();
+	$user_vacation = get_user_vacation( $current_user->ID );
+	?>
+	<div>
+		<div class="ui toggle checkbox handlerx label-left" id="vacation_mode_toggle_ui">
+			<?php wpj_vacation_mode_toggle( $user_vacation ); ?>
+		</div>
+		<div class="ui modal smaller center" id="vacation_mode_modal_ui">
+			<?php wpj_vacation_mode_content( $user_vacation ); ?>
+		</div>
+	</div>
+	<?php
+}
+
+
+function wpj_vacation_mode_toggle( $user_vacation = null ) {
+	if ( is_ajax() ) { check_ajax_referer( 'modals' ); }
+
+	if ( $user_vacation === null ) {
+		global $current_user;
+		$current_user = wp_get_current_user();
+		$user_vacation = get_user_vacation( $current_user->ID );
+	}
+
+	if ( ! $user_vacation ) { ?>
+		<input type="checkbox" name="vacation_mode_toggle">
+	<?php } else { ?>
+		<input type="checkbox" name="vacation_mode_toggle" checked>
+	<?php } ?>
+
+	<label for="vacation_mode_toggle">
+		<?php _e( 'Vacation Mode', 'wpjobster' ); ?>
+	</label>
+
+	<?php
+	if ( is_ajax() ) { wp_die(); }
+}
+
+
+add_action( 'wp_ajax_nopriv_wpj_vacation_mode_content', 'wpj_vacation_mode_content' );
+add_action( 'wp_ajax_wpj_vacation_mode_content', 'wpj_vacation_mode_content' );
+function wpj_vacation_mode_content( $user_vacation = false ) {
+	if ( is_ajax() ) {
+		check_ajax_referer( 'modals' );
+		global $current_user;
+		$current_user = wp_get_current_user();
+		$user_vacation = get_user_vacation( $current_user->ID );
+	}
+
+	if ( ! $user_vacation ) { ?>
+
+		<i class="close icon"></i>
+		<div class="ui header icon">
+			<i class="plane inverted grey icon"></i>
+			<?php _e( 'Activate Vacation Mode', 'wpjobster' ); ?>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label><?php _e( 'Away reason', 'wpjobster' ); ?></label>
+					<select class="ui fluid dropdown" name="wpjobster_vacation_away_reason" id="wpjobster_vacation_away_reason">
+						<option value=""><?php _e( 'Select', 'wpjobster' ); ?></option>
+						<option value="1"><?php echo get_vacation_reason( 1 ); ?></option>
+						<option value="2"><?php echo get_vacation_reason( 2 ); ?></option>
+						<option value="3"><?php echo get_vacation_reason( 3 ); ?></option>
+					</select>
+				</div>
+				<div class="field cf">
+					<label><?php _e( 'End date', 'wpjobster' ); ?></label>
+					<div class="ui calendar" id="vacation_mode_end_ui">
+						<div class="ui input left icon">
+							<i class="calendar icon"></i>
+							<input type="text" placeholder="Date" name="wpjobster_vacation_duration_end" id="wpjobster_vacation_duration_end">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="messages">
+			</div>
+		</div>
+		<div class="actions">
+			<div class="ui green labeled icon button" id="vacation_mode_yes">
+				<?php _e( 'Activate', 'wpjobster' ); ?>
+				<i class="checkmark icon"></i>
+			</div>
+			<div class="ui cancel labeled icon button">
+				<?php _e( 'Cancel', 'wpjobster' ); ?>
+				<i class="close icon"></i>
+			</div>
+		</div>
+
+	<?php } else { ?>
+
+		<i class="close icon"></i>
+		<div class="ui header icon">
+			<i class="plane inverted grey icon"></i>
+			<?php _e( 'Deactivate Vacation Mode', 'wpjobster' ); ?>
+		</div>
+		<div class="content">
+			<div class="ui form">
+				<div class="field">
+					<label><?php _e( 'Away reason', 'wpjobster' ); ?></label>
+					<input placeholder="<?php echo $user_vacation['reason']; ?>" readonly="" type="text">
+				</div>
+				<div class="field cf">
+					<label><?php _e( 'End date', 'wpjobster' ); ?></label>
+					<input placeholder="<?php echo date_i18n( get_option( 'date_format' ), $user_vacation['end'], false ); ?>" readonly="" type="text">
+				</div>
+			</div>
+			<div class="messages">
+			</div>
+		</div>
+		<div class="actions">
+			<div class="ui red labeled icon button" id="vacation_mode_no">
+				<?php _e( 'Deactivate', 'wpjobster' ); ?>
+				<i class="checkmark icon"></i>
+			</div>
+			<div class="ui cancel labeled icon button">
+				<?php _e( 'Cancel', 'wpjobster' ); ?>
+				<i class="close icon"></i>
+			</div>
+		</div>
+
+	<?php }
+	if ( is_ajax() ) { wp_die(); }
+}
+
+
+add_action( 'wp_ajax_nopriv_wpj_vacation_mode_activate', 'wpj_vacation_mode_activate' );
+add_action( 'wp_ajax_wpj_vacation_mode_activate', 'wpj_vacation_mode_activate' );
+function wpj_vacation_mode_activate() {
+	check_ajax_referer( 'modals' );
+
+	$duration_start    = date('Y-m-d');
+	$duration_start_ts = time();
+	$duration_end      = WPJ_Form::post( 'end_date' );
+	$duration_end_ts   = WPJ_Form::post( 'end_date_timestamp' );
+	$away_reason       = WPJ_Form::post( 'away_reason', 0 );
+	if ( $away_reason == 0 ) {
+		$away_reason = 3;
+	}
+
+	global $current_user;
+	$current_user = wp_get_current_user();
+	$user_vacation = get_user_vacation( $current_user->ID );
+
+	if ( $user_vacation ) {
+		echo 'err_already_in_vacation';
+
+	} elseif ( $duration_end_ts == '' ) {
+		echo 'err_empty_end_date';
+
+	} elseif ( $duration_end_ts <= $duration_start_ts ) {
+		echo 'err_small_end_date';
+
+	} else {
+		global $wpdb;
+		$wpdb->query( $wpdb->prepare(
+			"
+			INSERT INTO {$wpdb->prefix}job_uservacation (
+				user_id,
+				away_reason,
+				duration_start,
+				duration_start_ts,
+				duration_end,
+				duration_end_ts,
+				vacation_mode )
+			VALUES (
+				%d, %d, %s, %d, %s, %d, %d )
+			",
+			$current_user->ID,
+			$away_reason,
+			$duration_start,
+			$duration_start_ts,
+			$duration_end,
+			$duration_end_ts,
+			1
+		) );
+
+		echo 'success';
+	}
+
+	wp_die();
+}
+
+
+add_action( 'wp_ajax_nopriv_wpj_vacation_mode_deactivate', 'wpj_vacation_mode_deactivate' );
+add_action( 'wp_ajax_wpj_vacation_mode_deactivate', 'wpj_vacation_mode_deactivate' );
+function wpj_vacation_mode_deactivate() {
+	check_ajax_referer( 'modals' );
+
+	$duration_end_actual_ts = time();
+	$duration_end_actual = date('Y-m-d');
+
+	global $current_user;
+	$current_user = wp_get_current_user();
+
+	global $wpdb;
+	$wpdb->query( $wpdb->prepare(
+		"
+		UPDATE {$wpdb->prefix}job_uservacation
+		SET duration_end_actual = %s,
+			duration_end_actual_ts = %d,
+			vacation_mode = %d
+		WHERE user_id = %d
+			AND vacation_mode = %d
+		ORDER BY id DESC
+		",
+		$duration_end_actual,
+		$duration_end_actual_ts,
+		0,
+		$current_user->ID,
+		1
+	) );
+
+	echo 'success';
+	wp_die();
+}
+
+function wpj_deactivate_modal() { ?>
+
+	<div class="ui modal smaller center deactivate-job">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="inverted grey low vision icon"></i>
+			<div class="job-title-modal"></div>
+		</div>
+		<div class="center content deactivate-job">
+			<?php _e( 'Are you sure you want to deactivate this job?', 'wpjobster' ); ?>
+		</div>
+		<div class="center actions">
+			<div class="ui blue labeled icon button ajax_deactivate_job">
+				<i class="checkmark icon"></i>
+				<?php _e('Deactivate', 'wpjobster'); ?>
+			</div>
+			<div class="ui labeled icon cancel button">
+				<i class="remove icon"></i>
+				<?php _e('Cancel', 'wpjobster'); ?>
+			</div>
+		</div>
+	</div>
+
+
+<?php
+}
+
+function wpj_activate_modal() { ?>
+
+	<div class="ui modal smaller center activate-job">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="inverted grey unhide icon"></i>
+			<div class="job-title-modal"></div>
+		</div>
+		<div class="center content activate-job">
+			<?php _e( 'Are you sure you want to activate this job?', 'wpjobster' ); ?>
+		</div>
+		<div class="center actions">
+			<div class="ui blue labeled icon button ajax_activate_job">
+				<i class="checkmark icon"></i>
+				<?php _e('Activate', 'wpjobster'); ?>
+			</div>
+			<div class="ui labeled icon labeled icon cancel button">
+				<i class="remove icon"></i>
+				<?php _e('Cancel', 'wpjobster'); ?>
+			</div>
+		</div>
+	</div>
+
+
+<?php
+}
+
+function wpj_delete_modal() { ?>
+
+	<div class="ui modal smaller center delete-job">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="inverted grey trash icon"></i>
+			<div class="job-title-modal"></div>
+		</div>
+		<div class="center content delete-job">
+			<?php _e( 'Are you sure you want to delete this job?', 'wpjobster' ); ?>
+		</div>
+		<div class="center actions">
+			<div class="ui red labeled icon button ajax_delete_job">
+				<i class="checkmark icon"></i>
+				<?php _e( 'Delete', 'wpjobster' ); ?>
+			</div>
+			<div class="ui labeled icon cancel button">
+				<i class="remove icon"></i>
+				<?php _e('Cancel', 'wpjobster'); ?>
+			</div>
+		</div>
+	</div>
+
+
+<?php
+}
+
+function wpj_request_modal() { ?>
+
+	<div class="ui modal smaller center delete-request">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="inverted grey trash icon"></i>
+			<div class="request-title-modal"></div>
+		</div>
+		<div class="center content delete-request">
+			<?php _e( 'Are you sure you want to delete this request?', 'wpjobster' ); ?>
+		</div>
+		<div class="center actions">
+			<div class="ui red labeled icon button ajax_delete_request">
+				<i class="checkmark icon"></i>
+				<?php _e( 'Delete', 'wpjobster' ); ?>
+			</div>
+			<div class="ui labeled icon cancel button">
+				<i class="remove icon"></i>
+				<?php _e('Cancel', 'wpjobster'); ?>
+			</div>
+		</div>
+	</div>
+
+<?php }
+
+function wpj_send_custom_offer_modal($user) { ?>
+
+
+	<div class="ui modal smaller center send-custom-offer">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Send Customer Offer', 'wpjobster' ); ?>
+		</div>
+		<div id="custom-offers-offer-target" class="content custom-offers-offer-dialog" data-user="<?php echo $user; ?>">
+			<div class="form-custom-offer-modal"></div>
+		</div>
+	</div>
+
+<?php }
+
+
+function wpj_request_customer_offer_modal($user, $jid) { ?>
+
+	<div class="ui modal smaller center request_customer_offer">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Request Custom Offer', 'wpjobster' ); ?>
+		</div>
+		<div id="custom-offers-request-target" class="content custom-offers-request-dialog" data-jid="<?php echo $jid; ?>" data-user="<?php echo $user; ?>">
+			<div class="form-customer-request-offer"></div>
+		</div>
+	</div>
+
+<?php }
+
+function wpj_send_customer_offer_request_received($user) { ?>
+
+	<div class="ui modal smaller center request-received">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Send Custom Offer', 'wpjobster' ); ?>
+		</div>
+
+		<div class="wrapper-textarea-error"></div>
+		<div class="wrapper-price-error"></div>
+		<div class="wrapper-days-error"></div>
+
+		<div id="custom-offers-offer-target" class="content pm-offer custom-offers-offer-dialog" data-user="<?php echo $user; ?>">
+			<div class="form-customer-offer-request-received"></div>
+		</div>
+	</div>
+
+<?php }
+
+function wpj_send_customer_offer_recent_request($user, $request_id) { ?>
+	<div class="ui modal center smaller recent-request-modal custom-offers-container <?php echo $request_id; ?>">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Send Custom Offer', 'wpjobster' ); ?>
+		</div>
+
+		<div id="custom-offers-offer-target-<?php echo $request_id; ?>" class="content" data-user="<?php echo $user; ?>">
+			<div class="form-customer-offer-recent-request"></div>
+		</div>
+
+	</div>
+<?php }
+
+function wpj_send_customer_offer_request_error($request_id) { ?>
+	<div class="ui modal center smaller request-error-modal custom-offers-container <?php echo $request_id; ?>">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="remove circle red icon"></i>
+			<?php _e( 'You not allowed to send custom offer', 'wpjobster' ); ?>
+		</div>
+
+		<div id="custom-offers-offer-target" class="content">
+			<div class="form-customer-offer-request-error"></div>
+		</div>
+
+	</div>
+<?php }
+
+function wpj_single_job_request_custom_offer($user, $jid) { ?>
+
+	<div class="ui modal smaller single-job-custom-offer">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Request Custom Offer', 'wpjobster' ); ?>
+		</div>
+		<div id="custom-offers-offer-target" class="content custom-offers-offer-dialog" data-jid="<?php echo $jid; ?>" data-user="<?php echo $user; ?>">
+			<div class="single-job-request-custom-offer"></div>
+		</div>
+	</div>
+
+<?php }
+
+add_action( 'wp_ajax_wpj_report_job_form', 'wpj_report_job_form' );
+add_action( 'wp_ajax_nopriv_wpj_report_job_form', 'wpj_report_job_form' );
+function wpj_report_job_form() {
+
+	global $current_user;
+	$uid = $current_user->ID;
+	$job_title = $_POST['my_title'];
+
+	if (isset($_POST)) { ?>
+		<div class="report-job-default-container">
+			<?php if (is_user_logged_in()) { ?>
+				<form action="javascript://" name="reportjobform" id="report_form" class="ui form report-job-default-form-container report_form">
+					<div class="form-wrapper">
+						<div class="report-job-status-container">
+							<div class="report-job-msg-target"></div>
+						</div>
+						<div class="cf field"><?php $job_title=stripslashes($_POST['my_title']); ?>
+							<?php _e("You are about to report the following job:","wpjobster");?><br /><?php echo $job_title;?>
+						</div>
+						<div class="field"><textarea required name="content" placeholder="<?php _e('Report Description', 'wpjobster'); ?>" id="report_content" class="request_message w100"></textarea></div>
+
+						<?php $_SESSION['formrandomid'] = md5(rand(0,10000000)); ?>
+						<input type="hidden" name="formrandomid" value="<?php echo $_SESSION['formrandomid']; ?>" />
+						<input type="hidden" name="user" value="<?php echo $uid; ?>" />
+						<input type="hidden" name="title" value="<?php echo $job_title ?>" />
+
+						<div class="two fields">
+							<div class="field">
+								<input class="report_button btn report-job uppercase green w100" id="report-modal-semantic" type="submit" value="<?php _e('Submit','wpjobster') ?>" name="report" />
+							</div>
+							<div class="field">
+								<input class="report_button btn report-job uppercase red w100" id="report-close" type="button" role="button" value="<?php _e('Cancel','wpjobster'); ?>" name="request" />
+							</div>
+						</div>
+					</div>
+				</form>
+			<?php
+			}
+			else {
+				_e("Not logged in", "wpjobster");
+			}
+			?>
+		</div>
+	<?php }
+	wp_die();
+}
+
+function wpj_modal_request_mutual_cancellation() { ?>
+
+	<div class="ui modal smaller request-mutual-cancellation modal-content-cancellation">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Request Mutual Cancellation', 'wpjobster' ); ?>
+		</div>
+	</div>
+
+<?php }
+
+
+add_action( 'wp_ajax_nopriv_wpj_request_mutual_cancellation_form', 'wpj_request_mutual_cancellation_form' );
+add_action( 'wp_ajax_wpj_request_mutual_cancellation_form', 'wpj_request_mutual_cancellation_form' );
+function wpj_request_mutual_cancellation_form() {
+
+	global $post, $wpdb;
+	$current_user = wp_get_current_user();
+	$uid = $current_user->ID;
+	$orderid = $_POST['oid'];
+	$s = "select * from ".$wpdb->prefix."job_orders where id='$orderid'";
+	$r = $wpdb->get_results($s);
+	$row = $r[0];
+	$pid = $row->pid;
+	$post = get_post($pid);
+	$user_info = get_userdata($post->post_author);
+	$user_name = $user_info->user_login;
+	$buyer      = $row->uid;
+	$buyer_name = get_userdata($buyer)->user_login;
+	$date_made = $row->date_made;
+	$message_to_buyer = $row->message_to_buyer;
+	$seller_is_logged_in = 0;
+	if($post->post_author == $uid) $seller_is_logged_in = 1;
+	elseif( $row->uid == $uid ) $buyer_is_logged_in = 1;
+
+	?>
+
+	<i class="close icon"></i>
+	<div class="ui icon header">
+		<i class="file text outline inverted grey icon"></i>
+		<?php _e( 'Request Mutual Cancellation', 'wpjobster' ); ?>
+	</div>
+
+	<div class="content">
+		<form method="post" id="wpj_send_mutual_cancellation">
+		<div class="ui form">
+		<?php if ( $seller_is_logged_in == 1 ) { //peace cancellation ?>
+
+			<div class="field">
+				<p><?php _e( 'You are about to request cancellation for this job. By using this option you are asking the buyer to mutually cancel the order. If he agrees, and cancels the order, the money gets refunded into his account and you will not get a bad review over it.', 'wpjobster' ); ?></p>
+			</div>
+
+			<div class="field">
+				<textarea class="wpj-grey-textarea" rows="4" id="message_to_buyer" name="message_to_buyer" cols="40" required="required" placeholder="<?php _e( 'Your message to the buyer: ', 'wpjobster' ); ?>"></textarea>
+
+				<input type="hidden" value="<?php echo $orderid; ?>" name="orderid" />
+				<input type="hidden" value="wpj_request_mutual_cancelation_vars" name="action" />
+				<input type="hidden" value="confirm_cancellation_from_seller" name="process_action" />
+			</div>
+
+		<?php } elseif( $buyer_is_logged_in == 1 ) { ?>
+
+			<div class="field">
+				<p><?php _e( 'You are about to request cancellation for this job. By using this option you are asking the seller to mutually cancel the order. If he agrees, and cancels the order, the money gets refunded into your account and you will not get a bad review over it.', 'wpjobster' ); ?></p>
+			</div>
+
+			<div class="field">
+				<textarea class="wpj-grey-textarea" rows="4" id="message_to_buyer" name="message_to_buyer" cols="40" required="required" placeholder="<?php _e( 'Your message to the seller:', 'wpjobster' ); ?>"></textarea>
+
+				<input type="hidden" value="<?php echo $orderid; ?>" name="orderid" />
+				<input type="hidden" value="wpj_request_mutual_cancelation_vars" name="action" />
+				<input type="hidden" value="confirm_cancellation_from_buyer" name="process_action" />
+			</div>
+
+		<?php } ?>
+		</div>
+		</form>
+	</div>
+
+	<div class="actions">
+		<button class="ui red labeled icon button btn-wpj-send-mutual-cancellation">
+			<?php echo __( 'Confirm', 'wpjobster' ); ?>
+			<i class="checkmark icon"></i>
+		</button>
+		<button class="ui cancel labeled icon button">
+			<?php _e( 'Cancel', 'wpjobster' ); ?>
+			<i class="close icon"></i>
+		</button>
+	</div>
+
+	<?php wp_die();
+
+}
+
+
+function wpj_modal_add_extra_chatbox() { ?>
+
+	<div class="ui modal smaller add-extra-chatbox">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Send Custom Extra', 'wpjobster' ); ?>
+		</div>
+		<div class="content modal-content-add-extra"></div>
+	</div>
+
+<?php }
+
+function wpj_modal_request_modification() { ?>
+
+	<div class="ui modal smaller request-modification modal-content-request-modification">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Request Modification', 'wpjobster' ); ?>
+		</div>
+	</div>
+
+<?php }
+
+function wpj_single_req_custom_offer_modal() { ?>
+
+	<div class="ui modal smaller single-req-custom-offer">
+		<i class="close icon"></i>
+		<div class="ui icon header">
+			<i class="file text outline inverted grey icon"></i>
+			<?php _e( 'Send Custom Offer', 'wpjobster' ); ?>
+		</div>
+	  	<div class="content modal-content-single-request-offer"></div>
+	</div>
+
+<?php }
+
+add_action( 'wp_ajax_nopriv_wpj_request_modification_form_function', 'wpj_request_modification_form_function' );
+add_action( 'wp_ajax_wpj_request_modification_form_function', 'wpj_request_modification_form_function' );
+function wpj_request_modification_form_function() {
+
+	global $post, $wpdb;
+	$current_user = wp_get_current_user();
+	$uid = $current_user->ID;
+	$orderid = $_POST['oid'];
+	$s = "select * from ".$wpdb->prefix."job_orders where id='$orderid'";
+	$r = $wpdb->get_results($s);
+	$row = $r[0];
+	$pid = $row->pid;
+	$post = get_post($pid);
+	$user_info = get_userdata($post->post_author);
+	$user_name = $user_info->user_login;
+	$buyer      = $row->uid;
+	$buyer_name = get_userdata($buyer)->user_login;
+	$date_made = $row->date_made;
+	$message_request_modification = $row->message_request_modification;
+
+	$seller_is_logged_in = 0;
+	if($post->post_author == $uid) $seller_is_logged_in = 1;
+	elseif( $row->uid == $uid ) $buyer_is_logged_in = 1; ?>
+
+	<i class="close icon"></i>
+	<div class="ui icon header">
+		<i class="file text outline inverted grey icon"></i>
+		<?php _e( 'Request Modification', 'wpjobster' ); ?>
+	</div>
+
+	<div class="content">
+		<form id="wpj_send_request_modification" method="post">
+		<div class="ui form">
+		<?php if ( $buyer_is_logged_in == 1 ) { ?>
+
+			<div class="field">
+				<p><?php _e( 'You are about to request modification for this job. By using this option you are asking the seller to modify the final product that you received.', 'wpjobster' ); ?></p>
+			</div>
+
+			<div class="field">
+				<textarea class="grey_input orange" rows="4" name="message_request_modification" cols="40" required="required" placeholder="<?php _e( 'Your message to the seller:', 'wpjobster' ); ?>"></textarea>
+
+				<input type="hidden" value="<?php echo $orderid; ?>" name="oid" />
+				<input type="hidden" value="wpj_request_modification_vars" name="action" />
+			</div>
+
+		<?php } ?>
+		</div>
+		</form>
+	</div>
+
+	<div class="actions">
+		<button class="ui yellow labeled icon button btn-wpj-send-request-modification">
+			<?php echo __('Confirm','wpjobster'); ?>
+			<i class="checkmark icon"></i>
+		</button>
+		<button class="ui cancel labeled icon button">
+			<?php _e( 'Cancel', 'wpjobster' ); ?>
+			<i class="close icon"></i>
+		</button>
+	</div>
+
+	<?php wp_die();
+
+}
+
+add_action( 'wp_ajax_nopriv_wpj_send_modal_message_ajax_user', 'wpj_send_modal_message_ajax_user' );
+add_action( 'wp_ajax_wpj_send_modal_message_ajax_user', 'wpj_send_modal_message_ajax_user' );
+function wpj_send_modal_message_ajax_user() {
+	global $current_user;
+	global $wpdb;
+	$current_user = wp_get_current_user();
+	$myuid = $current_user->ID;
+	$otheruid = $_POST['otheruid'];
+	$modal_message = $_POST['modal_message'];
+	$modal_price = $_POST['modal_price'];
+	$modal_delivery = $_POST['modal_delivery'];
+	$formrid = $_POST['formrandomid'];
+
+	if( isset( $_POST['jid'] ) ){
+		$jid = $_POST['jid'];
+	}else{
+		$jid = "";
+	}
+	$status = custom_offers_offer_submit( $content = $modal_message, $datemade = 0, $initiator = $myuid, $user = $otheruid, $price = $modal_price, $delivery = $modal_delivery, false, $jid );
+	$this_pm = isset( $status['this_pm'] ) ? $status['this_pm'] : '';
+	$query_msg = "SELECT * FROM " . $wpdb->prefix . "job_pm WHERE id =".$this_pm;
+	$r = $wpdb -> get_results( $query_msg );
+	wpjobster_pm_loop( $r, $myuid, $otheruid );
+	wp_die();
+}

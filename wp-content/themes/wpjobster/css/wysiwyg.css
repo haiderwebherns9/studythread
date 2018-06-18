@@ -1,0 +1,8 @@
+/*
+ * WYSIWYG styles
+ */
+
+.job-description-wysiwyg-style p {
+	display: block;
+	margin: 0.5em 0;
+}

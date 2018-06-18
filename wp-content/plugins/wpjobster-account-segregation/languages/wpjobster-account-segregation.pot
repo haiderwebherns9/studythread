@@ -1,0 +1,386 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2017-07-04 22:43+0000\n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: wpjobster-account-segregation.php:121
+#, php-format
+msgid "%d new user to aprove."
+msgid_plural "%d new users to aprove."
+msgstr[0] ""
+msgstr[1] ""
+
+#: wpjobster-account-segregation.php:121
+msgid "Go"
+msgstr ""
+
+#: wpjobster-account-segregation.php:133
+msgid "Settings"
+msgstr ""
+
+#. Name of the plugin
+#: wpjobster-account-segregation.php:143 wpjobster-account-segregation.php:464
+msgid "WPJobster Account Segregation"
+msgstr ""
+
+#: wpjobster-account-segregation.php:143 wpjobster-account-segregation.php:151
+#: wpjobster-account-segregation.php:154
+msgid "Account Segregation"
+msgstr ""
+
+#: wpjobster-account-segregation.php:190 wpjobster-account-segregation.php:199
+#: wpjobster-account-segregation.php:216
+msgid "Settings saved!"
+msgstr ""
+
+#: wpjobster-account-segregation.php:233
+msgid "Jobster - Account Segregation"
+msgstr ""
+
+#: wpjobster-account-segregation.php:236 wpjobster-account-segregation.php:260
+msgid "General Settings"
+msgstr ""
+
+#: wpjobster-account-segregation.php:237 wpjobster-account-segregation.php:380
+msgid "Seller Verification Settings"
+msgstr ""
+
+#: wpjobster-account-segregation.php:238 wpjobster-account-segregation.php:430
+msgid "Tools"
+msgstr ""
+
+#: wpjobster-account-segregation.php:264
+msgid ""
+"Choose if you want to add an input to the registration form in order to let "
+"the users select their preferred user type."
+msgstr ""
+
+#: wpjobster-account-segregation.php:265
+msgid "Buyer/seller options on registration form:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:268
+msgid "Show"
+msgstr ""
+
+#: wpjobster-account-segregation.php:269
+msgid "Hide"
+msgstr ""
+
+#: wpjobster-account-segregation.php:275
+msgid ""
+"If no user type is selected, or if the form is not displayed for the user to "
+"choose, this will be the default user type."
+msgstr ""
+
+#: wpjobster-account-segregation.php:276
+msgid "Default user type:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:279 wpjobster-account-segregation.php:473
+#: wpjobster-account-segregation.php:530 wpjobster-account-segregation.php:535
+#: wpjobster-account-segregation.php:540 wpjobster-account-segregation.php:545
+msgid "None"
+msgstr ""
+
+#: wpjobster-account-segregation.php:280 wpjobster-account-segregation.php:438
+#: wpjobster-account-segregation.php:474 wpjobster-account-segregation.php:531
+#: wpjobster-account-segregation.php:536 wpjobster-account-segregation.php:541
+#: wpjobster-account-segregation.php:546 wpjobster-account-segregation.php:787
+msgid "Buyer"
+msgstr ""
+
+#: wpjobster-account-segregation.php:281 wpjobster-account-segregation.php:439
+#: wpjobster-account-segregation.php:475 wpjobster-account-segregation.php:532
+#: wpjobster-account-segregation.php:537 wpjobster-account-segregation.php:542
+#: wpjobster-account-segregation.php:547 wpjobster-account-segregation.php:788
+msgid "Seller"
+msgstr ""
+
+#: wpjobster-account-segregation.php:286
+msgid "Select no if you want to manually approve each buyer user type."
+msgstr ""
+
+#: wpjobster-account-segregation.php:287
+msgid "Auto approve buyer:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:290 wpjobster-account-segregation.php:300
+#: wpjobster-account-segregation.php:310 wpjobster-account-segregation.php:320
+#: wpjobster-account-segregation.php:390
+msgid "Yes"
+msgstr ""
+
+#: wpjobster-account-segregation.php:291 wpjobster-account-segregation.php:301
+#: wpjobster-account-segregation.php:311 wpjobster-account-segregation.php:321
+#: wpjobster-account-segregation.php:391
+msgid "No"
+msgstr ""
+
+#: wpjobster-account-segregation.php:296
+msgid "Select no if you want to manually approve each seller user type."
+msgstr ""
+
+#: wpjobster-account-segregation.php:297
+msgid "Auto approve seller:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:306
+msgid ""
+"Select yes if you want to hide pages intended for sellers, like sales, my "
+"jobs or post new job."
+msgstr ""
+
+#: wpjobster-account-segregation.php:307
+msgid "Hide menu entries for buyers:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:316
+msgid "Select yes if you want to add user type feature to subscriptions page."
+msgstr ""
+
+#: wpjobster-account-segregation.php:317
+msgid "Add user type feature to subscriptions:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:328 wpjobster-account-segregation.php:420
+msgid "Save Options"
+msgstr ""
+
+#: wpjobster-account-segregation.php:335
+msgid "Users Approval"
+msgstr ""
+
+#: wpjobster-account-segregation.php:344
+msgid "Approve"
+msgstr ""
+
+#: wpjobster-account-segregation.php:345
+msgid "Reject"
+msgstr ""
+
+#: wpjobster-account-segregation.php:366
+msgid "Linkedin"
+msgstr ""
+
+#: wpjobster-account-segregation.php:384
+msgid ""
+"Select yes if you want to add confirmation page after user register as "
+"seller."
+msgstr ""
+
+#: wpjobster-account-segregation.php:385
+msgid "Require CV or Linkedin:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:396
+msgid "Insert your linkedin client ID"
+msgstr ""
+
+#: wpjobster-account-segregation.php:397
+msgid "Linkedin Client ID:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:401
+msgid "Insert your linkedin client Secret"
+msgstr ""
+
+#: wpjobster-account-segregation.php:402
+msgid "Linkedin Client Secret:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:406
+msgid ""
+"Select a page where shorcode ['wpjobster_account_confirmation'] is insered"
+msgstr ""
+
+#: wpjobster-account-segregation.php:407
+msgid "Seller verification page:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:435
+msgid "Users with empty user type:"
+msgstr ""
+
+#: wpjobster-account-segregation.php:441
+msgid "Sync"
+msgstr ""
+
+#: wpjobster-account-segregation.php:469
+msgid "WPJobster User Type"
+msgstr ""
+
+#: wpjobster-account-segregation.php:477
+msgid "Please select buyer or seller."
+msgstr ""
+
+#: wpjobster-account-segregation.php:525
+msgid "User type for each level."
+msgstr ""
+
+#: wpjobster-account-segregation.php:526 wpjobster-account-segregation.php:593
+msgid "User type"
+msgstr ""
+
+#: wpjobster-account-segregation.php:655
+msgid "You're almost done! Your seller application is under review."
+msgstr ""
+
+#: wpjobster-account-segregation.php:695
+#, php-format
+msgid ""
+"Your jobs have been paused because your subscription was cancelled or failed "
+"to renew and you lost your seller status. Please <a href=\"%s\">click "
+"here</a> in order to renew your subscription."
+msgstr ""
+
+#: wpjobster-account-segregation.php:703
+#, php-format
+msgid ""
+"Your jobs have been paused because your subscription was changed and you "
+"lost your seller status. Please <a href=\"%s\">click here</a> in order to "
+"renew your subscription."
+msgstr ""
+
+#: wpjobster-account-segregation.php:711
+msgid ""
+"Your jobs have been paused because your account was downgraded to buyer."
+msgstr ""
+
+#: wpjobster-account-segregation.php:786
+msgid "User Type"
+msgstr ""
+
+#: wpjobster-account-segregation.php:905 wpjobster-account-segregation.php:952
+msgid "Jobs"
+msgstr ""
+
+#: wpjobster-account-segregation.php:908 wpjobster-account-segregation.php:976
+#: wpjobster-account-segregation.php:1065
+msgid "Shopping"
+msgstr ""
+
+#: wpjobster-account-segregation.php:910 wpjobster-account-segregation.php:967
+#: wpjobster-account-segregation.php:1061
+msgid "Sales"
+msgstr ""
+
+#: wpjobster-account-segregation.php:912
+#: wpjobster-account-segregation.php:1008
+#: wpjobster-account-segregation.php:1079
+msgid "Payments"
+msgstr ""
+
+#: wpjobster-account-segregation.php:913
+#, php-format
+msgid "Private Messages %s"
+msgstr ""
+
+#: wpjobster-account-segregation.php:914
+msgid "Personal Info"
+msgstr ""
+
+#: wpjobster-account-segregation.php:915
+msgid "Feedback"
+msgstr ""
+
+#: wpjobster-account-segregation.php:956 wpjobster-account-segregation.php:1056
+msgid "Post New"
+msgstr ""
+
+#: wpjobster-account-segregation.php:958 wpjobster-account-segregation.php:1058
+msgid "My Jobs"
+msgstr ""
+
+#: wpjobster-account-segregation.php:983
+msgid "Requests"
+msgstr ""
+
+#: wpjobster-account-segregation.php:987 wpjobster-account-segregation.php:1068
+msgid "Post a Request"
+msgstr ""
+
+#: wpjobster-account-segregation.php:989 wpjobster-account-segregation.php:1070
+msgid "My Requests"
+msgstr ""
+
+#: wpjobster-account-segregation.php:991 wpjobster-account-segregation.php:1073
+msgid "All Requests"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1001
+#: wpjobster-account-segregation.php:1077
+msgid "Favorites"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1015
+msgid "Profile"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1019
+#: wpjobster-account-segregation.php:1082
+msgid "My Profile"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1021
+#: wpjobster-account-segregation.php:1084
+msgid "Edit Profile"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1038
+#: wpjobster-account-segregation.php:1115
+msgid "Logout"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1097
+msgid "Language"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1105
+msgid "Currency"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1173
+#, php-format
+msgid "Welcome %s!"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1176
+msgid ""
+"You're almost done! As a last step before becoming a seller, we need some "
+"information about your experience."
+msgstr ""
+
+#: wpjobster-account-segregation.php:1178
+msgid "Please upload your CV or connect with Linkedin"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1185
+msgid "OR"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1189
+msgid "Connect with Linkedin"
+msgstr ""
+
+#: wpjobster-account-segregation.php:1192
+msgid "Continue"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"This plugin extends Jobster Theme and allows you to segregate the accounts "
+"between buyers and sellers."
+msgstr ""
+
+#. Author of the plugin
+msgid "WPJobster"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://wpjobster.com/"
+msgstr ""

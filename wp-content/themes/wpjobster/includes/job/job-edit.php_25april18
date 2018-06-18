@@ -1,0 +1,804 @@
+<?php
+if ( ! function_exists( 'wpjobster_edit_job_area_function' ) ) {
+	function wpjobster_edit_job_area_function() {
+		wpjobster_init_uploader_scripts();
+
+		function wpjobster_filter_ttl($title){return __("Edit job",'wpjobster')." - ";}
+
+		add_filter( 'wp_title', 'wpjobster_filter_ttl', 10, 3 );
+
+		if(!is_user_logged_in()) { wp_redirect(wp_login_url(get_current_page_url())); exit; }
+
+		global $current_user, $wp_query;
+
+		$current_user = wp_get_current_user();
+		$pid          = $_GET['jobid'];
+		$posta        = get_post($pid);
+		$uid          = $current_user->ID;
+		$title        = $posta->post_title;
+		$cid          = $current_user->ID;
+
+		$wpjobster_packages = get_option('wpjobster_packages_enabled');
+
+		wpj_get_subscription_info_path();
+		$wpjobster_subscription_info = get_wpjobster_subscription_info($uid);
+
+		extract($wpjobster_subscription_info);
+
+		$user_level = wpjobster_get_user_level($current_user->ID);
+		do_user_level_extras_check( $current_user->ID );
+		$more_extras = get_post_meta($pid, 'more_extras', true);
+		$extras_allowed = get_option('wpjobster_get_level'.$user_level.'_extras');
+
+		if($wpjobster_subscription_noof_extras)$extras_allowed = $wpjobster_subscription_noof_extras;// override only if subscription extra available
+		if (!is_numeric($extras_allowed)) $extras_allowed = 3;
+		if($more_extras=='yes'){
+			$total_extras = get_number_of_extras_by_job($pid);
+			if( $total_extras <= $extras_allowed ){
+				$more_extras = 'no';
+				// check if the admin has enabled "Admin approves each job"
+				$wpjobster_admin_approve_job = get_option('wpjobster_admin_approve_job');
+				if ($wpjobster_admin_approve_job == "yes") {
+					$debug[]=array("poststatus_updated"=>wp_update_post(array("ID"=>$pid,"post_status"=>"draft")));
+					update_post_meta($pid, 'under_review', "1");
+				} else {
+					$debug[]=array("poststatus_updated"=>wp_update_post(array("ID"=>$pid,"post_status"=>"publish")));
+					update_post_meta($pid, 'under_review', "0");
+				}
+				delete_post_meta($pid,'more_extras');
+			}else{
+				$more_extras='yes';
+			}
+		}else{
+			$more_extras='no';
+		}
+		$more_extra_price = get_post_meta($pid, 'more_extra_price', true);
+		if($more_extra_price =='yes'){
+			do_user_level_extras_price_check($current_user->ID,$pid);
+			$more_extra_price = get_post_meta($pid, 'more_extra_price', true);
+		}
+		$more_job_price = get_post_meta($pid, 'more_job_price', true);
+		if($more_job_price =='yes'){
+			do_user_level_job_price_check($current_user->ID,$pid);
+			$more_job_price = get_post_meta($pid, 'more_job_price', true);
+		}
+		$job_price_allowed=get_option('wpjobster_level'.$user_level.'_max');
+		$extra_price_allowed=get_option('wpjobster_level'.$user_level.'_max_extra');
+		if($wpjobster_subscription_max_job_price)$job_price_allowed = $wpjobster_subscription_max_job_price ;
+		if($wpjobster_subscription_max_extra_price)$extra_price_allowed=$wpjobster_subscription_max_extra_price;
+		if($uid != $posta->post_author) { _e("Not your post. Sorry!",'wpjobster'); exit; }
+
+		if(isset($_POST['save-job'])){
+		
+			$price_select=trim(strip_tags(htmlspecialchars($_POST['prc'])));
+			if($price_select=="negotiable"){
+				$job_min_price  = trim(strip_tags(htmlspecialchars($_POST['job_min_price']))); 
+				$job_max_price  = trim(strip_tags(htmlspecialchars($_POST['job_max_price'])));
+			   update_post_meta($pid, 'job_price_select',$price_select);
+                update_post_meta($pid, 'job_min_price',$job_min_price); 	
+                update_post_meta($pid, 'job_max_price',$job_max_price);				
+			} else {
+			  	update_post_meta($pid, 'job_price_select',$price_select);
+			}
+			if(isset($_POST['other_subcat'])){
+			$subcat_text=$_POST['other_subcat'];
+			$serialized_array=array();
+				foreach($subcat_text as $key5=>$sb_val){
+					 if($subcat_text[$key5]==""){
+				        $adOK = 0;
+				       $post_new_error['subject_text'] = __('Error: Enter a Subject!','wpjobster');
+			      } else{
+				   $serialized_array[]=$subcat_text[$key5];
+			      }
+			}
+			      $serialize_data=  serialize($serialized_array);
+				  update_post_meta( $pid, 'subcat_text_field',$serialize_data); 
+			}
+			do_action("wpj_post_job_extra_fields_update",$pid);
+			$adOK = 1;
+
+			if(!is_demo_user()) {
+				$wpjobster_enable_extra=get_option('wpjobster_enable_extra');
+				if($wpjobster_subscription_noof_extras){
+					$wpjobster_enable_extra = 'yes';
+				}
+				if($wpjobster_enable_extra != "no"){
+					$sts = get_option('wpjobster_get_level'.$user_level.'_extras');
+					if($wpjobster_subscription_noof_extras)$sts = $extras_allowed = $wpjobster_subscription_noof_extras;// override only if subscription extra available
+					if(empty($sts)) $sts = 10;
+				}else{$sts=0;}
+
+				$wpjobster_characters_extradescription_max = get_option("wpjobster_characters_extradescription_max");
+				$wpjobster_characters_extradescription_min = get_option("wpjobster_characters_extradescription_min");
+				$wpjobster_characters_extradescription_max = (empty($wpjobster_characters_extradescription_max)|| $wpjobster_characters_extradescription_max==0)?50:$wpjobster_characters_extradescription_max;
+				$wpjobster_characters_extradescription_min = (empty($wpjobster_characters_extradescription_min)|| $wpjobster_characters_extradescription_min==0)?0:$wpjobster_characters_extradescription_min;
+				$j_extra_cnt=0;
+				$allowed_max_extra_price = get_option('wpjobster_level'.$user_level.'_max_extra');
+				if($wpjobster_subscription_max_extra_price) $allowed_max_extra_price = $wpjobster_subscription_max_extra_price;
+
+				for($k=1;$k<=$sts;$k++){
+					$extra_price    = trim($_POST['extra'.$k.'_price']);
+					$extra_content  = trim($_POST['extra'.$k.'_content']);
+					$extra_days = '';
+
+					if(isset($_POST['max_days_'.$k]))
+						$extra_days     = trim($_POST['max_days_'.$k]);
+					if(!empty($extra_price) && is_numeric($extra_price) && !empty($extra_content) && ( $extra_price<=$allowed_max_extra_price && $extra_price >= 1 || $allowed_max_extra_price=='' ) ){
+						$j_extra_cnt++;
+						update_post_meta($pid, 'extra'.$j_extra_cnt.'_price',       $extra_price);
+						update_post_meta($pid, 'extra'.$j_extra_cnt.'_content',     $extra_content);
+						if(empty($extra_days))
+							update_post_meta($pid, 'max_days_ex_'.$j_extra_cnt, "instant");
+						else
+							update_post_meta($pid, 'max_days_ex_'.$j_extra_cnt, $extra_days);
+
+					}
+					if(isset($_POST['enable_multiples_'.$k])){
+						update_post_meta($pid, 'extra'.$k.'_enabled', true);
+					}
+					else{
+						update_post_meta($pid, 'extra'.$k.'_enabled', false);
+					}
+					if(isset($_POST['enable_extra_'.$k])){
+						update_post_meta($pid, 'extra'.$k.'_extra_enabled', true);
+					}
+					else{
+						update_post_meta($pid, 'extra'.$k.'_extra_enabled', false);
+					}
+				}
+
+				$job_title          = trim(strip_tags(htmlspecialchars($_POST['job_title'])));
+				$lets_meet          = trim(strip_tags(htmlspecialchars(isset($_POST['lets_meet'])?$_POST['lets_meet']:"")));
+				if(wpj_bool_option('wpjobster_allow_wysiwyg_job_description')){
+					$job_description = wpj_description_parser( $_POST['job_description'] );
+				}else{
+					$job_description    = trim(nl2br(strip_tags(htmlspecialchars($_POST['job_description']))));
+				}
+				$job_tags           = trim(strip_tags(htmlspecialchars($_POST['job_tags'])));
+				$max_days = trim(strip_tags(htmlspecialchars($_POST['max_days'])));
+				$job_cost = htmlspecialchars(trim($_POST['job_cost']));
+				$instruction_box    = substr( nl2br(strip_tags(htmlspecialchars($_POST['instruction_box']))), 0 , 500);
+				update_post_meta($pid, "instruction_box", $instruction_box);
+
+				$wpjobster_enable_dropdown_values   = get_option('wpjobster_enable_dropdown_values');
+				$wpjobster_enable_free_input_box    = get_option('wpjobster_enable_free_input_box');
+				$job_price_allowed=get_option('wpjobster_level'.$user_level.'_max');
+
+				if($wpjobster_subscription_max_job_price) $job_price_allowed = $wpjobster_subscription_max_job_price;
+				if(($wpjobster_enable_dropdown_values == "yes" || $wpjobster_enable_free_input_box == "yes")){
+					if ( $job_cost == '' || $job_cost == '0' || $job_cost < 0 ) {
+						$job_cost = 0;
+					}
+					if ( is_numeric($job_cost) ){
+						if( $job_price_allowed ){
+							if( $job_cost <= $job_price_allowed ){
+								update_post_meta($pid, "price", $job_cost);
+							}
+						}else{
+							update_post_meta($pid, "price", $job_cost);
+						}
+					}
+				}else{
+					$job_cost = get_option('wpjobster_job_fixed_amount');
+					update_post_meta($pid, "price", $job_cost );
+				}
+				$images_order       = htmlspecialchars($_POST['images_order']);
+
+				if ($images_order) {
+					$images_order = explode(',', $images_order);
+					$i = 1;
+					foreach ($images_order as $image) {
+						update_post_meta($image, 'images_order', $i);
+						$i++;
+					}
+				}
+
+				// pictures
+				require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+				require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+				$default_nr = get_option('wpjobster_default_nr_of_pics');
+				if(empty($default_nr)) $default_nr = 5;
+				for($j=1;$j<=   $default_nr; $j++)
+				{
+					if(!empty($_FILES['file_' . $j]['name'])):
+						$upload_overrides   = array( 'test_form' => false );
+						$uploaded_file      = wp_handle_upload($_FILES['file_' . $j], $upload_overrides);
+						$file_name_and_location = $uploaded_file['file'];
+						$file_title_for_media_library = $_FILES['file_' . $j]['name'];
+						$arr_file_type      = wp_check_filetype(basename($_FILES['file_' . $j]['name']));
+						$uploaded_file_type = $arr_file_type['type'];
+						if($uploaded_file_type == "image/png" or $uploaded_file_type == "image/jpg" or $uploaded_file_type == "image/jpeg" or $uploaded_file_type == "image/gif" )
+						{
+							$attachment = array(
+											'post_mime_type' => $uploaded_file_type,
+											'post_title' => 'Uploaded image ' . addslashes($file_title_for_media_library),
+											'post_content' => '',
+											'post_status' => 'inherit',
+											'post_parent' =>  $pid,
+											'post_author' => $cid,
+										);
+							$attach_id = wp_insert_attachment( $attachment, $file_name_and_location, $pid );
+							$attach_data = wp_generate_attachment_metadata( $attach_id, $file_name_and_location );
+							wp_update_attachment_metadata($attach_id,  $attach_data);
+						}
+					endif;
+				}
+
+				if(isset($_POST['hidden_files_instant_job_attachments'])){
+					$upload_job_any_attachments = $_POST['hidden_files_instant_job_attachments'];
+					$upload_job_any_attachments_arr = explode(",", $upload_job_any_attachments);
+					$existing_job_any_attachments = get_post_meta($pid, 'job_any_attachments', true);
+					$existing_job_any_attachments_arr = explode(",", $existing_job_any_attachments);
+					$new_job_any_attachments_arr = array_merge($upload_job_any_attachments_arr, $existing_job_any_attachments_arr);
+					$new_job_any_attachments = implode(",",$new_job_any_attachments_arr);
+					update_post_meta( $pid, 'job_any_attachments', $new_job_any_attachments );
+					foreach ( $new_job_any_attachments_arr as $job_any_attachment ) {
+						update_post_meta( $job_any_attachment, 'job_id', $pid );
+					}
+					update_post_meta($pid, 'instant', 1);
+				}else{
+					update_post_meta($pid, 'instant', 0);
+				}
+
+				if(isset($_POST['hidden_files_preview_job_attachments'])){
+					$upload_job_any_attachments = $_POST['hidden_files_preview_job_attachments'];
+					$upload_job_any_attachments_arr = explode(",", $upload_job_any_attachments);
+					$existing_job_any_attachments = get_post_meta($pid, 'preview_job_attchments', true);
+					$existing_job_any_attachments_arr = explode(",", $existing_job_any_attachments);
+					$new_job_any_attachments_arr = array_merge($upload_job_any_attachments_arr, $existing_job_any_attachments_arr);
+					$new_job_any_attachments = implode(",",$new_job_any_attachments_arr);
+					update_post_meta( $pid, 'preview_job_attchments', $new_job_any_attachments );
+					foreach ( $new_job_any_attachments_arr as $job_any_attachment ) {
+						update_post_meta( $job_any_attachment, 'job_id_attachments', $pid );
+					}
+				}
+
+				$my_post                    = array();
+				$my_post['ID']              = $pid;
+				$my_post['post_content']    = $job_description;
+				$my_post['post_title']      = $job_title;
+				$my_post['post_name']       = sanitize_title_with_dashes( $job_title );
+				update_post_meta( $pid, 'job_title', $job_title );
+				$wpjobster_admin_approve_job = get_option('wpjobster_admin_approve_job');
+				if($wpjobster_admin_approve_job == "yes")
+				{
+					$my_post['post_status']         = 'draft';
+					update_post_meta($pid, 'under_review', "1");
+					wpjobster_send_email_allinone_translated('job_edit', 'admin', 'admin', $pid);
+				}
+				else
+				{
+					$my_post['post_status']         = 'publish';
+					update_post_meta($pid, 'under_review', "0");
+				}
+
+				wp_update_post( $my_post );
+				$job_category = $_POST['job_cat'];
+				
+			   $arr_cats               = array();
+				foreach($job_category as $key2=>$job_cat_val){
+				if(($key2+1)!=count($job_category)){
+				$term       = get_term( $job_category[$key2+1], 'job_cat' );
+				$job_cat[$key2+1]    = isset($term->slug)?$term->slug:"";
+				$arr_cats[]             = $job_cat[$key2+1];
+					}
+				}
+				//print_r($arr_cats);
+				if(!empty($_POST['subcat'])) {
+					$subcat=$_POST['subcat'];
+					foreach($subcat  as $key3=>$subcat_val){
+						$term = get_term($subcat_val, 'job_cat' );
+						$project_category2[$key3] = $term->slug;
+						$arr_cats[] = $project_category2[$key3];
+					}
+				}
+				
+				if($_POST['youtube_link1']){
+					if (strpos($_POST['youtube_link1'], 'youtube.com') === false) {
+						$adOK = 0;
+						$post_new_error['youtube'] = __('The youtube link is invalid!','wpjobster');
+					}
+				}
+				wp_set_post_tags( $pid, $job_tags);
+
+				// check if is paid for featured to prevent changing category
+				if((get_post_meta($pid, 'subcategory_featured_until', true)=='z' || get_post_meta($pid, 'subcategory_featured_until', true)==false) &&
+					 (get_post_meta($pid, 'category_featured_until', true)=='z' || get_post_meta($pid, 'category_featured_until', true)==false))
+					wp_set_object_terms($pid, $arr_cats,'job_cat');
+							if($max_days=='instant'){
+								$max_days=0;
+								update_post_meta($pid, "max_days", $max_days);
+								update_post_meta($pid, 'instant', 1);
+							}else{
+								update_post_meta($pid, "instant", 0);
+								update_post_meta($pid, "max_days", $max_days);
+							}
+				$wpjobster_enable_shipping = get_option('wpjobster_enable_shipping');
+				if ($wpjobster_enable_shipping == 'yes') {
+					$shipping = trim($_POST['shipping']);
+					if ( empty( $shipping ) || is_numeric( $shipping ) ) {
+						update_post_meta($pid, 'shipping', $shipping);
+					} elseif ($shipping != '') {
+						$adOK = 0; $post_new_error['shipping'] = __('The shipping price must be numeric. No strings allowed!', 'wpjobster');
+						update_post_meta($pid, 'shipping', '');
+					}
+				} else {
+					update_post_meta($pid, 'shipping', '');
+				}
+				update_post_meta($pid, "has_video", "0");
+				update_post_meta($pid, "lets_meet", $lets_meet);
+				$wpjobster_location = get_option('wpjobster_location');
+
+				if ($wpjobster_location == "yes") {
+					$location_input = isset( $_POST['location_input'] ) ? htmlspecialchars( $_POST['location_input'] ) : '';
+					$lat = isset( $_POST['lat'] ) ? htmlspecialchars( $_POST['lat'] ) : '';
+					$long = isset( $_POST['long'] ) ? htmlspecialchars($_POST['long']) : '';
+					update_post_meta($pid, "location_input", trim($location_input));
+					update_post_meta($pid, "lat", trim($lat));
+					update_post_meta($pid, "long", trim($long));
+					$wpjobster_location_display_map_user_choice = get_option('wpjobster_location_display_map_user_choice');
+					if ($wpjobster_location_display_map_user_choice == 'yes') {
+						$display_map = trim(strip_tags(htmlspecialchars(isset($_POST['display_map'])?$_POST['display_map']:"")));
+						update_post_meta($pid, "display_map", $display_map);
+					}
+				}
+
+				$wpjobster_distance = get_option('wpjobster_distance_display_condition');
+				if ($wpjobster_distance == 'always' || ($wpjobster_distance == 'ifchecked' && $lets_meet == 'yes')) {
+					$distance_input = isset( $_POST['distance_input'] ) ? trim(htmlspecialchars($_POST['distance_input'])) : '';
+					if (is_numeric($distance_input)) {
+						update_post_meta($pid, "distance_input", $distance_input);
+					}
+				} else {
+					update_post_meta($pid, "distance_input", '');
+				}
+				for($i=1;$i<=3;$i++){
+					if(isset($_POST['youtube_link'.$i])){
+						$y_link = htmlspecialchars($_POST['youtube_link'.$i]);
+						update_post_meta($pid, "youtube_link".$i, trim($y_link));
+						update_post_meta($pid, "has_video", "1");
+					}
+				}
+
+				$job_saved = 1;
+
+				$wpjobster_new_job_listing_fee  = get_option('wpjobster_new_job_listing_fee');
+				update_post_meta($pid, 'featured',  "0");
+				$featured = get_post_meta($pid, 'featured', true);
+				$paid     = get_post_meta($pid, 'paid',     true);
+				if(!isset($post_new_error )) { $post_new_error = array(); }
+				if(!isset($adOK)) { $adOK= 1; }
+				$min_job_amount = get_option('wpjobster_min_job_amount');
+				if ( ! is_numeric( $min_job_amount ) || $min_job_amount == '' || $min_job_amount == '0' || $min_job_amount < 0 ) {
+					$min_job_amount = 0;
+				}
+				$allowed_max_job_cost = get_option('wpjobster_level'.$user_level.'_max');
+				if ( $wpjobster_subscription_max_job_price ) {
+					$allowed_max_job_cost = $wpjobster_subscription_max_job_price;
+				}
+				if ( !isset( $_POST['packages'] ) ) {
+					if ( ( $job_cost > $allowed_max_job_cost && $allowed_max_job_cost != 0 ) || $job_cost < $min_job_amount) {
+						$adOK = 0; $post_new_error['job_cost'] = __( 'The job price must be in the following range:', 'wpjobster' ) . ' ' . wpjobster_get_show_price_classic($min_job_amount, 1) . ' - ' . wpjobster_get_show_price_classic($allowed_max_job_cost, 1);
+					}
+					if ( ! empty( $job_cost ) && ! is_numeric( $job_cost ) ) {
+						$adOK = 0; $post_new_error['job_cost1'] = __( 'The job price must be numeric. No strings allowed!', 'wpjobster' );
+					}
+					if ( $job_cost < 0 ) {
+						$adOK = 0; $post_new_error['job_cost'] = __( 'The job price must be higher than 0!', 'wpjobster' );
+					}
+				} else {
+					foreach ( $_POST['package_price'] as $job_cost ) {
+						if ( ( $job_cost > $allowed_max_job_cost && $allowed_max_job_cost != 0 ) || $job_cost < $min_job_amount) {
+							$adOK = 0; $post_new_error['job_cost'] = __( 'The job price must be in the following range:', 'wpjobster' ) . ' ' . wpjobster_get_show_price_classic($min_job_amount, 1) . ' - ' . wpjobster_get_show_price_classic($allowed_max_job_cost, 1);
+						}
+
+						if ( ! empty( $job_cost ) && ! is_numeric( $job_cost ) ) {
+							$adOK = 0; $post_new_error['job_cost1'] = __( 'The job price must be numeric. No strings allowed!', 'wpjobster' );
+						}
+
+						if ( $job_cost < 0 ) {
+							$adOK = 0; $post_new_error['job_cost'] = __( 'The job price must be higher than 0!', 'wpjobster' );
+						}
+					}
+				}
+
+				$inst = get_post_meta($pid, 'instant', true);
+				if( $inst == "1" && $_POST['hidden_files_instant_job_attachments'] == '' ) {
+					$job_any_attachments = get_post_meta($pid, 'job_any_attachments', true);
+					$attachments = explode(",", $job_any_attachments);
+					$adOK = 0;
+					if( $attachments ){
+						foreach ($attachments as $attachment) {
+							if($attachment != ""){
+								$adOK = 1;
+							}
+						}
+					}
+					if( $adOK == 0 ){
+						$post_new_error['empty_instant_files'] = __('Please upload at least one file for instant delivery','wpjobster');
+					}
+				}
+
+				$wpjobster_characters_extradescription_max = get_option("wpjobster_characters_extradescription_max");
+				$wpjobster_characters_extradescription_min = get_option("wpjobster_characters_extradescription_min");
+				$wpjobster_characters_extradescription_max = (empty($wpjobster_characters_extradescription_max)|| $wpjobster_characters_extradescription_max==0)?50:$wpjobster_characters_extradescription_max;
+				$wpjobster_characters_extradescription_min = (empty($wpjobster_characters_extradescription_min)|| $wpjobster_characters_extradescription_min==0)?0:$wpjobster_characters_extradescription_min;
+
+				for($k=1;$k<=$sts;$k++){
+					$extra_price    = trim($_POST['extra'.$k.'_price']);
+					$extra_content  = trim($_POST['extra'.$k.'_content']);
+					$extra_days = '';
+					if(isset($_POST['max_days_'.$k]))
+						$extra_days     = trim($_POST['max_days_'.$k]);
+
+					if(!empty($extra_content)){
+							if(mb_strlen($extra_content)<$wpjobster_characters_extradescription_min || mb_strlen($extra_content)>$wpjobster_characters_extradescription_max)
+							{
+								$adOK = 0; $post_new_error['extra_content']= sprintf(__('An extra needs to have at least %d characters and %d at most','wpjobster'),$wpjobster_characters_extradescription_min,$wpjobster_characters_extradescription_max);
+							}
+					}
+					elseif ((!empty($extra_content) && (empty($extra_days))))
+					{
+						$adOK = 0; $post_new_error['extra_days1']       = __( 'Please provide max days for extra delivery.', 'wpjobster' );
+					}
+
+					$allowed_max_extra_price = get_option('wpjobster_level'.$user_level.'_max_extra') ;
+					if($wpjobster_subscription_max_extra_price)$allowed_max_extra_price = $wpjobster_subscription_max_extra_price;
+					if((!empty($extra_content) && $allowed_max_extra_price!='' && is_numeric($extra_price)) && ($extra_price>$allowed_max_extra_price|| $extra_price < 1)):
+						$adOK = 0; $post_new_error['max_extra']             = __( 'The extras price must be in the following range:', 'wpjobster' ) . ' ' . wpjobster_get_show_price_classic(1, 1) . ' - ' . wpjobster_get_show_price_classic($allowed_max_extra_price, 1);
+					endif;
+				}
+
+				
+				
+				// validating job title
+				$characters_jobtitle_max = get_option("wpjobster_characters_jobtitle_max");
+				$characters_jobtitle_min = get_option("wpjobster_characters_jobtitle_min");
+				$characters_jobtitle_max = (empty($characters_jobtitle_max)|| $characters_jobtitle_max==0)?80:$characters_jobtitle_max;
+				$characters_jobtitle_min = (empty($characters_jobtitle_min)|| $characters_jobtitle_min==0)?15:$characters_jobtitle_min;
+				if(empty($job_title)){ $adOK = 0; $post_new_error['title']= __('You cannot leave the job title blank!','wpjobster'); }
+				elseif(mb_strlen($job_title)<$characters_jobtitle_min||mb_strlen($job_title)>$characters_jobtitle_max){
+					$adOK = 0; $post_new_error['title']= sprintf(__('The title needs to have at least %d characters and %d at most!','wpjobster'),$characters_jobtitle_min,$characters_jobtitle_max);
+				}
+
+				// validating job description
+				$wpjobster_characters_description_max = get_option("wpjobster_characters_description_max");
+				$wpjobster_characters_description_min = get_option("wpjobster_characters_description_min");
+				$wpjobster_characters_description_max = (empty($wpjobster_characters_description_max)|| $wpjobster_characters_description_max==0)?1000:$wpjobster_characters_description_max;
+				$wpjobster_characters_description_min = (empty($wpjobster_characters_description_min)|| $wpjobster_characters_description_min==0)?0:$wpjobster_characters_description_min;
+				if(!isset($job_description)) {
+					$adOK = 0; $post_new_error['description']   = __('You cannot leave the job description blank!','wpjobster');
+				}elseif(mb_strlen(count_newline_as_one_char($job_description))<$wpjobster_characters_description_min||mb_strlen(count_newline_as_one_char($job_description))>$wpjobster_characters_description_max)
+				{
+
+					$adOK = 0; $post_new_error['description'] = sprintf(__('The description needs to have at least %d characters and %d at most!','wpjobster'),$wpjobster_characters_description_min,$wpjobster_characters_description_max);
+
+					if ( isset( $_POST['packages'] ) ) {
+						foreach ( $_POST['package_description'] as $job_desc ) {
+							if ( ! $job_desc ) {
+								$adOK = 0; $post_new_error['description'] = sprintf(__('The description needs to have at least %d characters and %d at most!','wpjobster'),$wpjobster_characters_description_min,$wpjobster_characters_description_max);
+							}
+						}
+					}
+				}
+
+				// validating instuctions
+				$wpjobster_characters_instructions_max = get_option("wpjobster_characters_instructions_max");
+				$wpjobster_characters_instructions_min = get_option("wpjobster_characters_instructions_min");
+				$wpjobster_characters_instructions_max = (empty($wpjobster_characters_instructions_max)|| $wpjobster_characters_instructions_max==0)?350:$wpjobster_characters_instructions_max;
+				$wpjobster_characters_instructions_min = (empty($wpjobster_characters_instructions_min)|| $wpjobster_characters_instructions_min==0)?0:$wpjobster_characters_instructions_min;
+				if(!isset($_POST['instruction_box']))    {
+					$adOK = 0; $post_new_error['instruction_box']             = __('You cannot leave the Instructions blank!','wpjobster');
+				}elseif(mb_strlen(count_newline_as_one_char($_POST['instruction_box']))<$wpjobster_characters_instructions_min||mb_strlen(count_newline_as_one_char($_POST['instruction_box']))>$wpjobster_characters_instructions_max)
+				{
+					$adOK = 0; $post_new_error['instruction_box']= sprintf(__('The instructions need to have at least %d characters and %d at most!','wpjobster'),$wpjobster_characters_instructions_min,$wpjobster_characters_instructions_max);
+				}
+
+				if((get_post_meta($pid, 'subcategory_featured_until', true)=='z' || get_post_meta($pid, 'subcategory_featured_until', true)==false) && (get_post_meta($pid, 'category_featured_until', true)=='z' || get_post_meta($pid, 'category_featured_until', true)==false)){
+					if(empty($job_category))    { $adOK = 0; $post_new_error['job_category']    = __('Please select a category for your job.','wpjobster'); }
+					else {
+						$args3 = "orderby=name&order=ASC&hide_empty=0&parent=".$job_category;
+						$sub_terms3 = get_terms( 'job_cat', $args3 );
+						if( count( $sub_terms3 ) > 0 && ( ! isset( $_POST['subcat'] ) ) ) {
+							$adOK = 0; $post_new_error['subcat'] = __('Please select a subcategory','wpjobster');
+						}
+					}
+				}
+				if((isset($_POST['featured']) or $wpjobster_new_job_listing_fee > 0 ) and $error_not_zip != 1 and $adOK == 1)
+				{
+					if($paid != "1")
+					{
+						$my_post = array();
+						$my_post['post_status']     = 'draft';
+						$my_post['ID']              = $pid;
+						wp_update_post( $my_post );
+						if(isset($_POST['featured'])) // == "1")
+						update_post_meta($pid, 'featured',  "1");
+						$using_permalinks = wpjobster_using_permalinks();
+						if($using_permalinks) $rdrlnk = get_permalink(get_option('wpjobster_pay_for_posting_job_page_id'))."?jobid=".$pid;
+						else $rdrlnk = get_bloginfo('url')."/?page_id=".get_option('wpjobster_pay_for_posting_job_page_id')."&jobid=".$pid;
+						wp_redirect($rdrlnk);
+					}
+					else
+					{
+						if(isset($_POST['featured']))
+						update_post_meta($pid, 'featured',  "1");
+					}
+				}
+
+				//mandatory audio
+				$wpjobster_mandatory_audio_for_jbs = get_option('wpjobster_mandatory_audio_for_jbs');
+				$wpjobster_audio_enable     = get_option('wpjobster_audio');
+				if($wpjobster_mandatory_audio_for_jbs == "yes" && $wpjobster_audio_enable=="yes")
+				{
+					$args = array(
+					'order'          => 'ASC',
+					'orderby'        => 'post_date',
+					'post_type'      => 'attachment',
+					'post_parent'    => $pid,
+					'post_mime_type' => 'audio',
+					'numberposts'    => -1,
+					); $i = 0;
+					$attachments = get_posts($args);
+					if(count($attachments) == 0)
+					{
+						$adOK = 0; $post_new_error['job_audio']       = __('You need to upload at least one audio for your job!','wpjobster');
+					}
+				}
+				//end mandatory audio
+
+				//------Packages-----//
+				$user_level = wpjobster_get_user_level( $uid );
+				$lvl_sts = get_option( 'wpjobster_get_level'.$user_level.'_packages' );
+
+				wpj_get_subscription_info_path();
+				$wpjobster_subscription_info = get_wpjobster_subscription_info( $uid );
+				extract( $wpjobster_subscription_info );
+
+				if ( $wpjobster_subscription_enabled == 'yes' ) {
+					$lvl_sts = get_option( 'wpjobster_subscription_packages_'.$wpjobster_subscription_level );
+				}
+
+				if ( $wpjobster_packages == "yes" && $lvl_sts == 'yes' && isset( $_POST['packages'] ) && $_POST['packages'] == 'yes' ) {
+					update_post_meta( $pid, 'job_packages', $_POST['packages'] );
+
+					if ( isset( $_POST['package_name'] ) ) {
+						update_post_meta( $pid, 'package_name', $_POST['package_name']  );
+					}
+					if ( isset( $_POST['package_description'] ) ) {
+						update_post_meta( $pid, 'package_description', $_POST['package_description']  );
+					}
+					if ( isset( $_POST['package_max_days'] ) ) {
+						update_post_meta( $pid, 'package_max_days', $_POST['package_max_days']  );
+					}
+					if ( isset( $_POST['package_revisions'] ) ) {
+						update_post_meta( $pid, 'package_revisions', $_POST['package_revisions']  );
+					}
+					if ( isset( $_POST['package_price'] ) ) {
+						update_post_meta( $pid, 'package_price', $_POST['package_price']  );
+					}
+				} else {
+					update_post_meta( $pid, 'job_packages', 'no' );
+				}
+
+				$pck_custom_fields = array();
+				if ( $_POST['pck-inp-custom-name'] ) {
+					foreach ( $_POST['pck-inp-custom-name'] as $key => $value ) {
+						if ( $value['name'] != '' ) {
+							$pck_custom_fields[] = array(
+								'name' => $value,
+								'basic' => $_POST['pck-chk-value']['basic'][$key],
+								'standard' => $_POST['pck-chk-value']['standard'][$key],
+								'premium' => $_POST['pck-chk-value']['premium'][$key],
+							);
+						}
+					}
+					update_post_meta( $pid, 'package_custom_fields', $pck_custom_fields  );
+				}
+				//------END Packages-----//
+
+				$wpjobster_mandatory_pics_for_jbs = get_option('wpjobster_mandatory_pics_for_jbs');
+				if($wpjobster_mandatory_pics_for_jbs == "yes")
+				{
+					$args = array(
+						'order'          => 'ASC',
+						'orderby'        => 'post_date',
+						'post_type'      => 'attachment',
+						'post_parent'    => $pid,
+						'post_mime_type' => 'image',
+						'numberposts'    => -1,
+						'meta_query' => array(
+							array(
+								'relation' => 'OR',
+								array(
+									'key' => 'is_cover',
+									'value' => 1,
+									'compare' => '!='
+								),
+								array(
+									'key' => 'is_cover',
+									'compare' => 'NOT EXISTS',
+								),
+							),
+						),
+					); $i = 0;
+					$attachments = get_posts($args);
+					if(count($attachments) == 0)
+					{
+						$adOK = 0; $post_new_error['job_img']       = __('You need to upload at least one image for your job!','wpjobster');
+					}
+				}
+				if(array_key_exists ('extra_fast_price',$_POST))
+					$extra_fast_price = trim($_POST['extra_fast_price']);
+				else
+					$extra_fast_price = '';
+
+				if(array_key_exists ('extra_fast_price',$_POST))
+					$max_days_fast = trim($_POST['max_days_fast']);
+				else
+					$max_days_fast = '';
+
+				if(array_key_exists ('extra_revision_price',$_POST))
+					$extra_revision_price = trim($_POST['extra_revision_price']);
+				else
+					$extra_revision_price = '';
+
+				if(array_key_exists ('max_days_revision',$_POST))
+					$max_days_revision = $_POST['max_days_revision']?trim($_POST['max_days_revision']):'';
+				else
+					$max_days_revision = '';
+
+				$allowed_max_extra_price = get_option('wpjobster_level'.$user_level.'_max_extra');
+				if($wpjobster_subscription_max_extra_price)$allowed_max_extra_price = $wpjobster_subscription_max_extra_price;
+				$max_days = isset( $_POST['max_days'] ) ? trim( htmlspecialchars( $_POST['max_days'] ) ) : '';
+				if(isset($_POST['enable_extra_fast'])){
+					update_post_meta($pid, 'extra_fast_enabled', true);
+				}
+				else{
+					update_post_meta($pid, 'extra_fast_enabled', false);
+				}
+				if(isset($_POST['enable_extra_revision'])){
+					update_post_meta($pid, 'extra_revision_enabled', true);
+				}
+				else{
+					update_post_meta($pid, 'extra_revision_enabled', false);
+				}
+				if(isset($_POST['enable_multiples_revision'])){
+					update_post_meta($pid, 'extra_revision_multiples_enabled', true);
+				}
+				else{
+					update_post_meta($pid, 'extra_revision_multiples_enabled', false);
+				}
+				if(array_key_exists ('enable_extra_fast',$_POST) && $max_days!='instant'){
+					if (!$extra_fast_price){
+						$adOK = 0; $post_new_error['extra_fast_price'] = __( 'The extra fast delivery price must be in the following range:', 'wpjobster' ) . ' ' . wpjobster_get_show_price_classic(1, 1) . ' - ' . wpjobster_get_show_price_classic($allowed_max_extra_price, 1);
+					}
+					else{
+						update_post_meta($pid, 'extra_fast_price', $extra_fast_price);
+					}
+					if (!$max_days_fast)
+					{
+						$adOK = 0; $post_new_error['extra_fast_days'] = __( 'Please provide max days to deliver for extra fast delivery.', 'wpjobster' );
+					}
+				}
+				else{
+					update_post_meta($pid, 'extra_fast_price', $extra_fast_price);
+				}
+				if ($max_days ) {
+					if($max_days_fast!='instant' && $max_days <= $max_days_fast){
+						$adOK = 0; $post_new_error['extra_fast_days'] = __( 'Max days to deliver for extra fast delivery needs to be smaller than ', 'wpjobster' ) . $max_days . '.';
+					}
+					else{
+						update_post_meta($pid, 'extra_fast_days', $max_days_fast);
+					}
+				}
+				else{
+					update_post_meta($pid, 'extra_fast_days', $max_days_fast);
+				}
+				if(array_key_exists ('enable_extra_revision',$_POST)){
+					if (!$extra_revision_price ){
+						$adOK = 0; $post_new_error['extra_revision_price'] = __( 'The extra revision price must be in the following range:', 'wpjobster' ) . ' ' . wpjobster_get_show_price_classic(1, 1) . ' - ' . wpjobster_get_show_price_classic($allowed_max_extra_price, 1);
+					}
+					else{
+						update_post_meta($pid, 'extra_revision_price', $extra_revision_price);
+					}
+					if (!$max_days_revision)
+					{
+						$adOK = 0; $post_new_error['extra_revision_days'] = __( 'Please provide max days to deliver for extra revision.', 'wpjobster' );
+					}
+					else{
+						update_post_meta($pid, 'extra_revision_days', $max_days_revision);
+					}
+				}
+				else {
+					if ( $extra_revision_price && ( ! is_numeric( $extra_revision_price ) || $extra_revision_price > $allowed_max_extra_price || $extra_revision_price < 1 ) ) {
+						$adOK = 0; $post_new_error['extra_revision_price'] = __( 'The extra revision price must be in the following range:', 'wpjobster' ) . ' ' . wpjobster_get_show_price_classic( 1, 1 ) . ' - ' . wpjobster_get_show_price_classic( $allowed_max_extra_price, 1 );
+					}
+					else{
+						update_post_meta($pid, 'extra_revision_price', $extra_revision_price);
+					}
+				}
+			}
+		}
+
+		$price      = get_post_meta($pid, 'price', true);
+		$ttl        = $posta->post_title;
+		$max_days   = get_post_meta($pid, "max_days", true);
+		$max_days_ex[1]   = get_post_meta($pid, "max_days_ex_1", true);
+		$max_days_ex[2]   = get_post_meta($pid, "max_days_ex_2", true);
+		$max_days_ex[3]   = get_post_meta($pid, "max_days_ex_3", true);
+		$max_days_ex[4]   = get_post_meta($pid, "max_days_ex_4", true);
+		$max_days_ex[5]   = get_post_meta($pid, "max_days_ex_5", true);
+		$max_days_ex[6]   = get_post_meta($pid, "max_days_ex_6", true);
+		$max_days_ex[7]   = get_post_meta($pid, "max_days_ex_7", true);
+		$max_days_ex[8]   = get_post_meta($pid, "max_days_ex_8", true);
+		$max_days_ex[9]   = get_post_meta($pid, "max_days_ex_9", true);
+		$max_days_ex[10]   = get_post_meta($pid, "max_days_ex_10", true);
+		$max_days_fast   = get_post_meta($pid, "extra_fast_days", true);
+		$max_days_revision   = get_post_meta($pid, "extra_revision_days", true);
+		$location   = wp_get_object_terms($pid, 'job_location');
+		$cat_args   = array('orderby' => 'term_order', 'order' => 'ASC');
+		$cat        = wp_get_object_terms($pid, 'job_cat', $cat_args);
+		$rejected      = get_post_meta($pid, 'rejected', true);
+		$rejected_name = get_post_meta($pid, "rejected_name", true);
+		$rejected_description = get_post_meta($pid, "rejected_description", true);
+		$rejected_instructions = get_post_meta($pid, "rejected_instructions", true);
+		$rejected_tags = get_post_meta($pid, "rejected_tags", true);
+		$rejected_images = get_post_meta($pid, "rejected_images", true);
+		$rejected_audio = get_post_meta($pid, "rejected_audio", true);
+		$rejected_video = get_post_meta($pid, "rejected_video", true);
+		$rejected_extra1 = get_post_meta($pid, "rejected_extra1", true);
+		$rejected_extra2 = get_post_meta($pid, "rejected_extra2", true);
+		$rejected_extra3 = get_post_meta($pid, "rejected_extra3", true);
+		$rejected_job_preview = get_post_meta($pid, "rejected_job_preview", true);
+		$rejected_instant_delivery = get_post_meta($pid, "rejected_instant_delivery", true);
+		$rejected_name_comment = get_post_meta($pid, "rejected_name_comment", true);
+		$rejected_description_comment = get_post_meta($pid, "rejected_description_comment", true);
+		$rejected_instructions_comment = get_post_meta($pid, "rejected_instructions_comment", true);
+		$rejected_tags_comment = get_post_meta($pid, "rejected_tags_comment", true);
+		$rejected_images_comment = get_post_meta($pid, "rejected_images_comment", true);
+		$rejected_audio_comment = get_post_meta($pid, "rejected_audio_comment", true);
+		$rejected_video_comment = get_post_meta($pid, "rejected_video_comment", true);
+		$rejected_extra1_comment = get_post_meta($pid, "rejected_extra1_comment", true);
+		$rejected_extra2_comment = get_post_meta($pid, "rejected_extra2_comment", true);
+		$rejected_extra3_comment = get_post_meta($pid, "rejected_extra3_comment", true);
+		$rejected_job_preview_comment = get_post_meta($pid, "rejected_job_preview_comment", true);
+		$rejected_instant_delivery_comment = get_post_meta($pid, "rejected_instant_delivery_comment", true);
+		$posta = get_post($pid);
+
+		if($more_extras=='yes'){
+			$adOK=0;
+			$post_new_error['more_extras'] = sprintf(__('Only %s extras are allowed for your user level. Please delete the remaining.', 'wpjobster'), $extras_allowed);
+		}
+		if($more_extra_price=='yes'){
+			$adOK=0;
+			$post_new_error['more_extra_price'] = sprintf(__('Maximum price for extra allowed is %s. Please correct the extra pricing.', 'wpjobster'), $extra_price_allowed);
+		}
+		if($more_job_price=='yes'){
+			$adOK=0;
+			$post_new_error['more_job_price'] = sprintf(__('Maximum price for job allowed for your level is %s. Please correct the job pricing.', 'wpjobster'), $job_price_allowed);
+		}
+
+		if (isset($adOK) && $adOK == 1) {
+			$my_account_url = get_permalink(get_option('wpjobster_my_account_page_id'));
+			wp_redirect($my_account_url);
+			exit;
+		}
+		global $is_edit_pg;
+		$is_edit_pg = 1;
+
+		$main_path = get_template_directory() . '/template-parts/pages/job/page-edit-job.php';
+		$child_path = get_stylesheet_directory() . '/template-parts/pages/job/page-edit-job.php';
+		$file = get_stylesheet_directory_uri() . '/template-parts/pages/job/page-edit-job.php';
+
+		if ( is_child_theme() ) {
+			if ( wpjobster_url_exist( $file ) ){
+				include_once $child_path;
+			} else {
+				include_once $main_path;
+			}
+		} else {
+			include_once $main_path;
+		}
+	}
+}

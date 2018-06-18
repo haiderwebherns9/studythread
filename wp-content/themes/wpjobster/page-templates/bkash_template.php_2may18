@@ -1,0 +1,127 @@
+<?php get_header();
+/*
+Template Name: Bkash Template
+*/
+?>
+<?php
+$wpjobster_adv_code_single_page_above_content = stripslashes(get_option('wpjobster_adv_code_single_page_above_content'));
+
+if(!empty($wpjobster_adv_code_single_page_above_content)):
+	echo '<div class="full_width_a_div">';
+	echo $wpjobster_adv_code_single_page_above_content;
+	echo '</div>';
+endif;
+?>
+<div id="content">
+<div class="ui segment">
+<?php
+if ( have_posts() ): while ( have_posts() ) : the_post(); ?>
+		
+			<h1 class="page_title"><?php the_title() ?></h1>
+			<h3 id="bkash_pop">(Watch the Video Before making any Bkash Payment)</h3>
+			<?php the_content(); ?>
+		
+	<?php endwhile; ?>
+<?php endif; ?>
+    <?php 
+	 if(isset($_GET['job_id'])){
+		global $wpdb;
+		$jbid=$_GET['job_id'];
+        $query = "
+		SELECT * FROM ".$wpdb->prefix."posts
+		WHERE post_type = 'job'
+		AND ID =".$jbid
+		;
+		$res_job=$wpdb->get_row($query, ARRAY_A);		
+		//print_r($res_job);
+	   $job_title=  get_post_meta($jbid, 'job_title',true); 
+	   $job_price = get_post_meta($jbid, 'price',true); 
+	  
+	   $max_day_delivr = get_post_meta($jbid, 'max_days',true); 
+	   $instruction=get_post_meta($jbid,'instruction_box',true);
+	   if(isset($_COOKIE['country_name'])){
+	   $cuntry_id = $_COOKIE['country_name']; 
+	   } else {
+		   $cuntry_id="";
+	   }
+	 $query1 = "
+		SELECT * FROM ".$wpdb->prefix."country
+		WHERE country_id =".$cuntry_id
+		;
+		$curency=$wpdb->get_row($query1, ARRAY_A);
+		$curncy_code=$curency['currency'];
+		$curncy_code=$curency['currency'].'|'.$job_price;
+		// echo $max_day_delivr;
+	 }
+	 if(isset($_POST['submit'])){
+		// echo $job_price;
+		$tm = time();
+		$delive_tm=strtotime('+'.$max_day_delivr.' day', $tm );
+		$ins_qry=$wpdb->query( $wpdb->prepare(
+				"INSERT INTO `wp_87fsrr_job_orders` 
+				 ( `payment_status`, `payment_gateway`, `bkash_number`, `date_made`,`expected_delivery`, `pid`, `uid`, `job_price`,`job_title`,`job_description`,`job_instructions`,`payedamount`,`final_paidamount`) VALUES ('%s','%s','%d','%s','%d','%d','%d','%s','%s','%s',	'%s',	'%s',	'%s')",
+				array(
+					'pending','Bkash',$_POST['bksh_number'],$tm,$delive_tm,$_POST['cur_job_id'], get_current_user_id(),$job_price,$job_title,$res_job['post_content'],$instruction,$curncy_code,$curncy_code)
+			));
+			$lastid = $wpdb->insert_id;
+			//echo $lastid;
+			if($ins_qry){
+				?>
+				  <script>
+			    location.href ="<?php echo site_url();?>/bkash-order-confirmation/";
+			</script>
+			<?php }
+		//print_r($wpdb->show_errors());
+	 }
+	
+	?>
+    <form method="post">
+    <?php 
+	  if((isset($_GET['tid'])) && (isset($_GET['job_id']))  ){
+		   $uid=$_GET['tid'];
+		   $jid=$_GET['job_id'];
+		   $teacher_fname = get_user_meta($uid, 'first_name', true ); 
+		   $teacher_lname = get_user_meta($uid, 'last_name', true ); 
+		   $bkash_number = get_user_meta($uid, 'Bkash_number', true ); 
+		   if($bkash_number!=""){ ?>
+			  <div class="tchr_detail">
+			     <?php  echo  "Send the Money to " . $teacher_fname." ".$teacher_lname." at Bkash Number  ".$bkash_number." to start the order." ;?>
+                </div>			  
+			   <?php
+		   }
+		   ?>
+		   <input type="hidden" name="teacher_id_bksh" value="<?php echo $uid;?>"/>
+		   <input type="hidden" name="cur_job_id" value="<?php echo $jid;?>"/>
+		   <input type="hidden" name= "bksh_number" value="<?php echo $bkash_number;?>"/>
+	        <input type="submit" class="ui primary button" name="submit" value="Submit" />
+	        <a  href="<?php echo site_url();?>/?jb_action=purchase_this&jobid=<?php echo $jid;?>" class="ui primary button">Cancel</a>
+	<?php  
+	  }
+	?>
+	</div>
+</div>
+</div>
+	<div class="bkash_popup">	
+				<div id="job_Modal" class="jmodal">
+				  <!-- Modal content -->
+				  <div class="jmodal-content">
+				  <span class="cclose">&times;</span>
+					<div class="jmodal-body">
+						 <?php if ( is_active_sidebar( 'bkash_video' ) ) : ?>
+												<?php dynamic_sidebar( 'bkash_video' ); ?>
+									   <?php endif; ?>
+					</div>
+					</div>
+				 </div>
+				 </div>
+              <script>
+				 $(document).ready(function() {
+					$("#bkash_pop").click(function(){
+						$("#job_Modal").show();
+					});
+					$(".cclose").click(function(){
+						 $("#job_Modal").hide();
+					});
+			   });
+		</script>
+<?php get_footer(); ?>

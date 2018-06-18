@@ -1,0 +1,445 @@
+# Translation of Themes - Sela in German
+# This file is distributed under the same license as the Themes - Sela package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-10-09 01:23:13+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: de\n"
+"Project-Id-Version: Themes - Sela\n"
+
+#. Description of the plugin/theme
+msgid "Sela is not your typical business theme. Vibrant, bold, and clean, with lots of space for large images, this theme will look great on all devices, from desktop to mobile."
+msgstr "Sela ist nicht das typische Business-Theme. Dynamisch, klar und sauber mit viel Platz für große Bilder, sieht dieses Theme auf jedem Gerät vom Desktop bis zum Handy gut aus."
+
+#. Theme Name of the plugin/theme
+msgid "Sela"
+msgstr "Sela"
+
+#: inc/plugin-enhancements.php:160
+msgid "Portfolios"
+msgstr "Portfolios"
+
+#: inc/plugin-enhancements.php:142
+msgid "Comics"
+msgstr "Comics"
+
+#: inc/plugin-enhancements.php:133
+msgid "Menus"
+msgstr "Menüs"
+
+#: inc/plugin-enhancements.php:115
+msgid "Featured Content"
+msgstr "Hervorgehobener Inhalt"
+
+#: inc/plugin-enhancements.php:106
+msgid "Site Logo"
+msgstr "Website-Logo"
+
+#: inc/plugin-enhancements.php:288
+msgid "To use %1$s, please activate the Jetpack plugin&rsquo;s %2$s."
+msgstr "Um %1$s zu benutzen, aktiviere bitte im Jetpack-Plugin %2$s."
+
+#: inc/plugin-enhancements.php:263
+msgid "Install"
+msgstr "Installieren"
+
+#: inc/plugin-enhancements.php:261
+msgid " Please install %1$s. %2$s"
+msgstr "Please installiere %1$s. %2$s"
+
+#: inc/plugin-enhancements.php:253
+msgid "Activate"
+msgstr "aktiviert"
+
+#: inc/plugin-enhancements.php:251
+msgid " Please activate %1$s. %2$s"
+msgstr "Bitte aktivere %1$s. %2$s"
+
+#: inc/plugin-enhancements.php:179
+msgid "Custom Content Types module"
+msgstr "Modul für Individuelle Inhaltstypen"
+
+#: inc/plugin-enhancements.php:178
+msgid "no specific module needed"
+msgstr "kein spezielles Modul benötigt"
+
+#: inc/plugin-enhancements.php:83
+msgid "Jetpack plugin"
+msgstr "Jetpack-Plugin"
+
+#: inc/plugin-enhancements.php:82
+msgid "The %1$s is necessary to use some of this theme&rsquo;s features, including: "
+msgstr "Das %1$s wird benötigt, um eine einige Funktionen dieses Themes nutzen zu können. Dazu gehören: "
+
+#. Template Name of the plugin/theme
+msgid "Grid Page"
+msgstr "Rasteransicht"
+
+#. Template Name of the plugin/theme
+msgid "Full Width Page"
+msgstr "Seite in ganzer Breite"
+
+#. Template Name of the plugin/theme
+msgid "Front Page"
+msgstr "Startseite"
+
+#: search.php:16
+msgid "Search Results for: %s"
+msgstr "Suchergebnisse für: %s"
+
+#: inc/template-tags.php:423
+msgid "Archives"
+msgstr "Archive"
+
+#. translators: 1: Taxonomy singular name, 2: Current taxonomy term
+#: inc/template-tags.php:421
+msgid "%1$s: %2$s"
+msgstr "%1$s: %2$s"
+
+#: inc/template-tags.php:417
+msgid "Archives: %s"
+msgstr "Archive: %s"
+
+#: inc/template-tags.php:414
+msgctxt "post format archive title"
+msgid "Chats"
+msgstr "Chats"
+
+#: inc/template-tags.php:412
+msgctxt "post format archive title"
+msgid "Audio"
+msgstr "Audio"
+
+#: inc/template-tags.php:410
+msgctxt "post format archive title"
+msgid "Statuses"
+msgstr "Status"
+
+#: inc/template-tags.php:408
+msgctxt "post format archive title"
+msgid "Links"
+msgstr "Links"
+
+#: inc/template-tags.php:406
+msgctxt "post format archive title"
+msgid "Quotes"
+msgstr "Zitate"
+
+#: inc/template-tags.php:404
+msgctxt "post format archive title"
+msgid "Videos"
+msgstr "Videos"
+
+#: inc/template-tags.php:402
+msgctxt "post format archive title"
+msgid "Images"
+msgstr "Bilder"
+
+#: inc/template-tags.php:400
+msgctxt "post format archive title"
+msgid "Galleries"
+msgstr "Galerien"
+
+#: inc/template-tags.php:398
+msgctxt "post format archive title"
+msgid "Asides"
+msgstr "Kurzmitteilungen"
+
+#: inc/template-tags.php:395
+msgctxt "daily archives date format"
+msgid "F j, Y"
+msgstr "j. F Y"
+
+#: inc/template-tags.php:395
+msgid "Day: %s"
+msgstr "Tag: %s"
+
+#: inc/template-tags.php:393
+msgctxt "monthly archives date format"
+msgid "F Y"
+msgstr "F Y"
+
+#: inc/template-tags.php:393
+msgid "Month: %s"
+msgstr "Monat: %s"
+
+#: inc/template-tags.php:391
+msgctxt "yearly archives date format"
+msgid "Y"
+msgstr "Y"
+
+#: inc/template-tags.php:391
+msgid "Year: %s"
+msgstr "Jahr: %s"
+
+#: inc/template-tags.php:389
+msgid "Author: %s"
+msgstr "Autor: %s"
+
+#: inc/template-tags.php:387
+msgid "Tag: %s"
+msgstr "Schlagwort: %s"
+
+#: inc/template-tags.php:385
+msgid "Category: %s"
+msgstr "Kategorie: %s"
+
+#: inc/template-tags.php:333 inc/template-tags.php:335
+msgid "Posted in: %1$s"
+msgstr "Veröffentlicht in: %1$s"
+
+#: inc/template-tags.php:327
+msgid "<a href=\"%3$s\" title=\"Permalink to %4$s\" rel=\"bookmark\">Permalink</a>."
+msgstr "<a href=\"%3$s\" title=\"Permalink zu %4$s\" rel=\"bookmark\">Permalink</a>."
+
+#. translators: used between list items, there is a space after the comma
+#: inc/template-tags.php:325 inc/template-tags.php:333
+msgid "Tagged: %2$s"
+msgstr "Schlagwort: %2$s"
+
+#. translators: used between list items, there is a space after the comma
+#: inc/template-tags.php:317
+msgid ", "
+msgstr ", "
+
+#: inc/template-tags.php:200
+msgid "% Comments"
+msgstr "% Kommentare"
+
+#: inc/template-tags.php:200
+msgid "1 Comment"
+msgstr "1 Kommentar"
+
+#: inc/template-tags.php:200
+msgid "Leave a comment"
+msgstr "Schreibe einen Kommentar"
+
+#: inc/template-tags.php:189
+msgid "Featured"
+msgstr "Hervorgehoben"
+
+#: inc/template-tags.php:95
+msgid "Your comment is awaiting moderation."
+msgstr "Dein Kommentar wartet auf Freischaltung."
+
+#: inc/template-tags.php:89
+msgctxt "1: date, 2: time"
+msgid "%1$s at %2$s"
+msgstr "%1$s um %2$s"
+
+#: inc/template-tags.php:84
+msgid "%s <span class=\"says\">says:</span>"
+msgstr "%s <span class=\"says\">sagt:</span>"
+
+#: inc/template-tags.php:75
+msgid "Pingback:"
+msgstr "Pingback:"
+
+#: inc/template-tags.php:54
+msgctxt "Next post link"
+msgid "%title&nbsp;<span class=\"meta-nav\"></span>"
+msgstr "%title&nbsp;<span class=\"meta-nav\"></span>"
+
+#: inc/template-tags.php:53
+msgctxt "Previous post link"
+msgid "<span class=\"meta-nav\"></span>&nbsp;%title"
+msgstr "<span class=\"meta-nav\"></span>&nbsp;%title"
+
+#: inc/template-tags.php:50
+msgid "Post navigation"
+msgstr "Beitrags-Navigation"
+
+#: inc/template-tags.php:27
+msgid "Newer posts <span class=\"meta-nav\"></span>"
+msgstr "Neuere Beiträge <span class=\"meta-nav\"></span>"
+
+#: inc/template-tags.php:23
+msgid "<span class=\"meta-nav\"></span> Older posts"
+msgstr "<span class=\"meta-nav\"></span> Ältere Beiträge"
+
+#: inc/template-tags.php:19
+msgid "Posts navigation"
+msgstr "Beitrags-Navigation"
+
+#: inc/extras.php:113
+msgid "Page %s"
+msgstr "Seite %s"
+
+#: image.php:32
+msgid "Published <span class=\"entry-date\"><time class=\"entry-date\" datetime=\"%1$s\">%2$s</time></span> at <a href=\"%3$s\" title=\"Link to full-size image\">%4$s &times; %5$s</a> in <a href=\"%6$s\" title=\"Return to %7$s\" rel=\"gallery\">%8$s</a>"
+msgstr "Veröffentlicht <span class=\"entry-date\"><time class=\"entry-date\" datetime=\"%1$s\">%2$s</time></span> am <a href=\"%3$s\" title=\"Link zum Originalbild\">%4$s &times; %5$s</a> in <a href=\"%6$s\" title=\"Zurück zu %7$s\" rel=\"gallery\">%8$s</a>"
+
+#: image.php:22
+msgid "Next <span class=\"meta-nav\"></span>"
+msgstr "Weiter <span class=\"meta-nav\"></span>"
+
+#: image.php:21
+msgid "<span class=\"meta-nav\"></span> Previous"
+msgstr "<span class=\"meta-nav\"></span> Zurück"
+
+#: header.php:37
+msgid "Menu"
+msgstr "Menü"
+
+#: header.php:23
+msgid "Skip to content"
+msgstr "Springe zum Inhalt"
+
+#: functions.php:169
+msgid "Third Front Page Widget Area"
+msgstr "Dritter Widget-Bereich der Startseite"
+
+#: functions.php:161
+msgid "Second Front Page Widget Area"
+msgstr "Zweiter Startseiten Widget Bereich"
+
+#: functions.php:153
+msgid "First Front Page Widget Area"
+msgstr "Erster Startseiten Widget Bereich"
+
+#: functions.php:145
+msgid "Third Footer Widget Area"
+msgstr "Dritter Bereich des Footer-Widgets "
+
+#: functions.php:137
+msgid "Second Footer Widget Area"
+msgstr "Zweiter Bereich des Footer-Widgets"
+
+#: functions.php:129
+msgid "First Footer Widget Area"
+msgstr "Erster Bereich des Footer-Widgets"
+
+#: functions.php:121
+msgid "Main Sidebar"
+msgstr "Haupt-Seitenleiste"
+
+#. translators: If there are characters in your language that are not supported
+#. by Oswald, translate this to 'off'. Do not translate into your own language.
+#: functions.php:92
+msgctxt "Oswald font: on or off"
+msgid "on"
+msgstr "on"
+
+#. translators: If there are characters in your language that are not supported
+#. by Droid Serif, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:87
+msgctxt "Droid Serif font: on or off"
+msgid "on"
+msgstr "on"
+
+#. translators: If there are characters in your language that are not supported
+#. by Source Sans Pro, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:82
+msgctxt "Source Sans Pro font: on or off"
+msgid "on"
+msgstr "on"
+
+#: functions.php:49 inc/plugin-enhancements.php:124
+msgid "Social Menu"
+msgstr "Social Media Menü"
+
+#: functions.php:48
+msgid "Primary Menu"
+msgstr "Primäres Menü"
+
+#: footer.php:21
+msgid "Theme: %1$s by %2$s."
+msgstr "Theme: %1$s von %2$s."
+
+#: footer.php:19
+msgid "Proudly powered by %s"
+msgstr "Stolz präsentiert von %s"
+
+#: footer.php:19
+msgid "A Semantic Personal Publishing Platform"
+msgstr "A Semantic Personal Publishing Platform"
+
+#: content-none.php:26
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "Es sieht so aus, als ob wir nicht das finden konnten, wonach du gesucht hast. Möglicherweise hilft die Suchfunktion."
+
+#: content-none.php:21
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "Entschuldigung, aber zu deinen Suchbegriffen wurde nichts passendes gefunden. Bitte versuche es mit anderen Stichworten noch einmal."
+
+#: content-none.php:17
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "Bereit, um deinen ersten Beitrag zu veröffentlichen? <a href=\"%1$s\">Starte hier</a>."
+
+#: content-none.php:11
+msgid "Nothing Found"
+msgstr "Nichts gefunden."
+
+#: content-grid.php:26 content-page.php:25 content-testimonial.php:21
+#: image.php:43 inc/template-tags.php:75 inc/template-tags.php:99
+#: inc/template-tags.php:205 page-templates/front-page.php:28
+msgid "Edit"
+msgstr "Bearbeiten"
+
+#: inc/template-tags.php:228
+msgid "Permalink to %s"
+msgstr "Permalink zu %s"
+
+#: content-aside.php:29 content-gallery.php:30 content-image.php:31
+#: content-link.php:28 content-page.php:19 content-quote.php:29
+#: content-video.php:29 content.php:36 image.php:63
+msgid "Pages:"
+msgstr "Seiten:"
+
+#: content-aside.php:26 content-gallery.php:27 content-image.php:28
+#: content-link.php:25 content-quote.php:26 content-video.php:26 content.php:33
+msgid "Continue reading <span class=\"meta-nav\">&rarr;</span>"
+msgstr "Weiterlesen <span class=\"meta-nav\">&rarr;</span>"
+
+#: comments.php:48
+msgid "Comments are closed."
+msgstr "Kommentare sind geschlossen."
+
+#: comments.php:26 comments.php:38
+msgid "Newer Comments &rarr;"
+msgstr "Neuere Kommentare &rarr;"
+
+#: comments.php:25 comments.php:37
+msgid "&larr; Older Comments"
+msgstr "&larr; Ältere Kommentare"
+
+#: comments.php:24 comments.php:36
+msgid "Comment navigation"
+msgstr "Kommentar-Navigation"
+
+#: comments.php:17
+msgctxt "comments title"
+msgid "One thought on &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s thoughts on &ldquo;%2$s&rdquo;"
+msgstr[0] "Ein Gedanke zu &#8222;%2$s&#8220;"
+msgstr[1] "%1$s Gedanken zu &#8222;%2$s&#8220;"
+
+#: archive-jetpack-testimonial.php:29 inc/plugin-enhancements.php:151
+msgid "Testimonials"
+msgstr "Referenzen"
+
+#: 404.php:19
+msgid "It looks like nothing was found at this location. Maybe try one of the links below or a search?"
+msgstr "Es wurde nichts gefunden. Versuche es mit einem der folgenden Links oder der Suche."
+
+#: 404.php:15
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "Die Seite konnte nicht gefunden werden."
+
+#. Author URI of the plugin/theme
+msgid "https://wordpress.com/themes/"
+msgstr "https://wordpress.com/themes/"
+
+#. Author of the plugin/theme
+msgid "Automattic"
+msgstr "Automattic"
+
+#. Theme URI of the plugin/theme
+msgid "https://wordpress.com/themes/sela/"
+msgstr "https://wordpress.com/themes/sela/"

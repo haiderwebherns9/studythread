@@ -1,0 +1,7 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@selectionVisibleBorderColor : @primaryColor;
+@selectionFocusBorderColor : @primaryColor;
+@selectionActiveHoverBorderColor : @primaryColor;

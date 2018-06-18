@@ -1,0 +1,9 @@
+/*******************************
+     User Global Variablesss
+*******************************/
+@primaryColor   : #83C124;
+@secondaryColor : #2d5767;
+
+@fontPath  : "/wp-content/themes/wpjobster/vendor/semantic-ui/themes/default/assets/fonts/";
+@imagePath  : "/wp-content/themes/wpjobster/vendor/semantic-ui/themes/default/assets/images/";
+@import "site.php";

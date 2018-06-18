@@ -1,0 +1,321 @@
+# Translation of Themes - Twenty Seventeen in Hindi
+# This file is distributed under the same license as the Themes - Twenty Seventeen package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2016-12-06 05:43:08+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: hi_IN\n"
+"Project-Id-Version: Themes - Twenty Seventeen\n"
+
+#. Description of the plugin/theme
+msgid "Twenty Seventeen brings your site to life with header video and immersive featured images. With a focus on business sites, it features multiple sections on the front page as well as widgets, navigation and social menus, a logo, and more. Personalize its asymmetrical grid with a custom color scheme and showcase your multimedia content with post formats. Our default theme for 2017 works great in many languages, for any abilities, and on any device."
+msgstr "बीस सत्रह छवियों और सूक्ष्म एनीमेशन के साथ आपकी साइट को जीवंत बनाता है। इसे मुख्य रूप से व्यापारिक साइट के लिए बनाया गया है। जिसमें कई सारे अनुभाग और साथ में विजेट, नेविगेसन, मेनू, लोगो और बहुत कुछ है। आप इसे अपने पसंद के रंगों से सजा भी सकते हैं और अनेक प्रकार के मीडिया सामग्री को भी अपने पोस्ट के साथ डाल सकते हैं। हमारा 2017 का मूल थीम कई भाषाओं, कई डिवाइस के साथ बहुत अच्छे से काम करता है।"
+
+#. Theme Name of the plugin/theme
+msgid "Twenty Seventeen"
+msgstr "बीस सत्रह"
+
+#: template-parts/header/site-branding.php:34
+#: template-parts/navigation/navigation-top.php:27
+msgid "Scroll down to content"
+msgstr "कंटेंट तक स्क्रॉल करे"
+
+#: functions.php:159
+msgctxt "Theme starter content"
+msgid "Coffee"
+msgstr "कॉफी"
+
+#: functions.php:155
+msgctxt "Theme starter content"
+msgid "Sandwich"
+msgstr "सैंडविच"
+
+#: functions.php:151
+msgctxt "Theme starter content"
+msgid "Espresso"
+msgstr "एस्प्रेसो"
+
+#: inc/custom-header.php:119
+msgid "Pause background video"
+msgstr "बैकग्राउंड वीडियो रोकें"
+
+#: inc/custom-header.php:118
+msgid "Play background video"
+msgstr "बैकग्राउंड वीडियो चलायें"
+
+#: inc/template-tags.php:150
+msgid "Front Page Section %1$s Placeholder"
+msgstr "मुख पृष्ठ अनुभाग %1$s प्लेसहोल्डर"
+
+#: single.php:32
+msgid "Next Post"
+msgstr "अगली पोस्ट"
+
+#: index.php:27
+msgid "Posts"
+msgstr "पोस्ट"
+
+#: inc/template-tags.php:88
+msgid "Tags"
+msgstr "टैग"
+
+#: inc/template-tags.php:84
+msgid "Categories"
+msgstr "श्रेणियाँ"
+
+#. translators: used between list items, there is a space after the comma
+#: inc/template-tags.php:65
+msgid ", "
+msgstr ", "
+
+#. translators: %s: post date
+#: inc/template-tags.php:51
+msgid "<span class=\"screen-reader-text\">Posted on</span> %s"
+msgstr "%s <span class=\"screen-reader-text\">पर प्रकाशित किया गया </span>"
+
+#. translators: %s: post author
+#: inc/template-tags.php:21
+msgid "by %s"
+msgstr "%s द्वारा"
+
+#: inc/icon-functions.php:44
+msgid "Please define an SVG icon filename."
+msgstr "कृपया एक एसवीजी आइकन फ़ाइल नाम को परिभाषित कीजिये।"
+
+#: inc/icon-functions.php:39
+msgid "Please define default parameters in the form of an array."
+msgstr "कृपया मूल पैरामीटर को array के रूप में परिभाषित करें।"
+
+#: inc/customizer.php:108
+msgid "Select pages to feature in each area from the dropdowns. Add an image to a section by setting a featured image in the page editor. Empty sections will not be displayed."
+msgstr "ड्रॉपडाउन में दिखाने के लिए पृष्ठ चुनें। पृष्ठ संपादक में जा कर विशेष स्थान प्राप्त छवि चुन कर अनुभाग में छवि जोड़ सकते हैं। खाली अनुभाग दिखायें नहीं जायेंगे।  "
+
+#. translators: %d is the front page section number
+#: inc/customizer.php:107
+msgid "Front Page Section %d Content"
+msgstr "मुख पृष्ठ अनुभाग %d सामग्री"
+
+#: inc/customizer.php:83 inc/customizer.php:132
+msgid "Two Column"
+msgstr "दो कॉलम"
+
+#: inc/customizer.php:82 inc/customizer.php:131
+msgid "One Column"
+msgstr "एक कॉलम"
+
+#: inc/customizer.php:77
+msgid "Page Layout"
+msgstr "पृष्ठ लेआउट"
+
+#: inc/customizer.php:66
+msgid "Theme Options"
+msgstr "थीम विकल्प"
+
+#: inc/customizer.php:50
+msgid "Custom"
+msgstr "कस्टम"
+
+#: inc/customizer.php:48
+msgid "Light"
+msgstr "हल्का"
+
+#: inc/customizer.php:46
+msgid "Color Scheme"
+msgstr "रंग योजना"
+
+#: inc/custom-header.php:49
+msgid "Default Header Image"
+msgstr "मूल शीर्ष छवि"
+
+#: functions.php:335
+msgid "Footer 2"
+msgstr "फूटर 2"
+
+#: functions.php:327 functions.php:337
+msgid "Add widgets here to appear in your footer."
+msgstr "फूटर में विजेट दिखाने के लिए यहाँ डालें।"
+
+#: functions.php:325
+msgid "Footer 1"
+msgstr "फूटर 1"
+
+#. Translators: If there are characters in your language that are not supported
+#. by Libre Franklin, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:269
+msgctxt "Libre Franklin font: on or off"
+msgid "on"
+msgstr "चालू"
+
+#: functions.php:63 functions.php:183
+#: template-parts/navigation/navigation-top.php:12
+msgid "Top Menu"
+msgstr "शीर्ष मेनू"
+
+#: comments.php:60
+msgid "Reply"
+msgstr "उत्तर"
+
+#: template-parts/post/content-none.php:27
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "ऐसा प्रतीत होता है कि हम वह नहीं ढूंढ पाए जिसके लिए आप खोज रहे हैं। शायद खोजना मदद कर सके।"
+
+#: search.php:50
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "क्षमा करें, लेकिन आपके खोज शब्दों से कुछ भी नहीं मेल हुआ। कृपया कुछ अलग खोजशब्दों के साथ पुन: प्रयास करें।"
+
+#: template-parts/post/content-none.php:23
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "अपनी पहली पोस्ट प्रकाशित करने के लिए तैयार हैं? <a href=\"%1$s\"> यहाँ से प्रारंभ करें</a>।"
+
+#: search.php:21 template-parts/post/content-none.php:17
+msgid "Nothing Found"
+msgstr "कुछ नहीं मिला"
+
+#: single.php:31
+msgid "Previous Post"
+msgstr "पिछला पोस्ट:"
+
+#: comments.php:66 single.php:31
+msgid "Previous"
+msgstr "पिछला"
+
+#: comments.php:67 single.php:32
+msgid "Next"
+msgstr "अगला"
+
+#: searchform.php:20
+msgctxt "submit button"
+msgid "Search"
+msgstr "खोज"
+
+#: searchform.php:19
+msgctxt "placeholder"
+msgid "Search &hellip;"
+msgstr "खोज &hellip;"
+
+#: searchform.php:17
+msgctxt "label"
+msgid "Search for:"
+msgstr "खोजे "
+
+#: search.php:19
+msgid "Search Results for: %s"
+msgstr " %s : के खोज परिणाम"
+
+#. translators: %s: Name of current post
+#: functions.php:363 template-parts/page/content-front-page-panels.php:43
+#: template-parts/page/content-front-page.php:44
+#: template-parts/post/content-audio.php:83
+#: template-parts/post/content-gallery.php:70
+#: template-parts/post/content-image.php:59
+#: template-parts/post/content-video.php:82 template-parts/post/content.php:56
+msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr "पढ़ना जारी रखें<span class=\"screen-reader-text\"> \"%s\"</span>"
+
+#: inc/customizer.php:49
+msgid "Dark"
+msgstr ""
+"\t\n"
+"काला"
+
+#: inc/back-compat.php:39 inc/back-compat.php:51 inc/back-compat.php:66
+msgid "Twenty Seventeen requires at least WordPress version 4.7. You are running version %s. Please upgrade and try again."
+msgstr "बीस सत्रह के लिए कम से कम वर्डप्रेस संस्करण 4.7 की आवश्यकता है। आप संस्करण %s उपयोग कर रहे हैं। अद्यतन करें और फिर कोशिश करें।"
+
+#. translators: %s: Name of current post
+#: inc/template-tags.php:116
+msgid "Edit<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr "संपादित करें<span class=\"screen-reader-text\"> \"%s\"</span>"
+
+#: template-parts/page/content-page.php:25
+#: template-parts/post/content-audio.php:88
+#: template-parts/post/content-gallery.php:75
+#: template-parts/post/content-image.php:64
+#: template-parts/post/content-video.php:87 template-parts/post/content.php:61
+msgid "Pages:"
+msgstr "पृष्ठे:"
+
+#: template-parts/navigation/navigation-top.php:17
+msgid "Menu"
+msgstr "मेनू"
+
+#: header.php:27
+msgid "Skip to content"
+msgstr "सामग्री पर जाएं"
+
+#: functions.php:446
+msgid "Collapse child menu"
+msgstr "चाइल्ड मेनू संक्षिप्त करें "
+
+#: functions.php:445
+msgid "Expand child menu"
+msgstr "चाइल्ड मेनू विस्तृत करे"
+
+#: functions.php:64 functions.php:194
+msgid "Social Links Menu"
+msgstr "सामाजिक कड़ी सूचि"
+
+#: template-parts/footer/site-info.php:13
+msgid "Proudly powered by %s"
+msgstr "गर्व से %s द्वारा संचालित"
+
+#. #-#-#-#-#  twentyseventeen.pot (Twenty Seventeen 1.3)  #-#-#-#-#
+#. Author URI of the plugin/theme
+#: template-parts/footer/site-info.php:13
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/"
+
+#: footer.php:25
+msgid "Footer Social Links Menu"
+msgstr "पाद सोशल लिंक मेनू"
+
+#: comments.php:75
+msgid "Comments are closed."
+msgstr "टिप्पणिया बंद कर दी गयी है।"
+
+#. translators: 1: number of comments, 2: post title
+#: comments.php:40
+msgctxt "comments title"
+msgid "%1$s Reply to &ldquo;%2$s&rdquo;"
+msgid_plural "%1$s Replies to &ldquo;%2$s&rdquo;"
+msgstr[0] "&ldquo;%2$s&rdquo; पर %1$s का विचार"
+msgstr[1] "&ldquo;%2$s&rdquo; पर %1$s का विचार "
+
+#. translators: %s: post title
+#: comments.php:36
+msgctxt "comments title"
+msgid "One Reply to &ldquo;%s&rdquo;"
+msgstr "&ldquo;%s&rdquo; पर एक उत्तर"
+
+#: archive.php:47 index.php:52 search.php:45
+msgid "Page"
+msgstr "पृष्ठ"
+
+#: 404.php:21
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "क्षमा! वह पृष्ठ नहीं मिला।"
+
+#: 404.php:24
+msgid "It looks like nothing was found at this location. Maybe try a search?"
+msgstr "ऐसा लगता है कि इस एड्रेस पर कुछ नहीं था। कृपया दोबारा खोजने का प्रयास करें?"
+
+#: archive.php:45 index.php:50 search.php:43
+msgid "Previous page"
+msgstr "पिछला पृष्ठ"
+
+#: archive.php:46 index.php:51 search.php:44
+msgid "Next page"
+msgstr "अगला पृष्ठ"
+
+#. Author of the plugin/theme
+msgid "the WordPress team"
+msgstr "वर्डप्रेस समूह"
+
+#. Theme URI of the plugin/theme
+msgid "https://wordpress.org/themes/twentyseventeen/"
+msgstr "https://wordpress.org/themes/twentysixteen/"

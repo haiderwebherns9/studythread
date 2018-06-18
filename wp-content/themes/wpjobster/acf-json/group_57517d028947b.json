@@ -1,0 +1,201 @@
+{
+    "key": "group_57517d028947b",
+    "title": "User Level Icons",
+    "fields": [
+        {
+            "key": "field_56784373ab3a8",
+            "label": "User Level Icons",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_56784294ab3a2",
+            "label": "User Level 1 Icon",
+            "name": "user_level_1_icon",
+            "type": "image",
+            "instructions": "Upload an icon with a minimum of 100x100px.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "preview_size": "thumbnail",
+            "library": "all",
+            "return_format": "url",
+            "min_width": 0,
+            "min_height": 0,
+            "min_size": 0,
+            "max_width": 0,
+            "max_height": 0,
+            "max_size": 0,
+            "mime_types": ""
+        },
+        {
+            "key": "field_56784307ab3a3",
+            "label": "User Level 2 Icon",
+            "name": "user_level_2_icon",
+            "type": "image",
+            "instructions": "Upload an icon with a minimum of 100x100px.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "preview_size": "thumbnail",
+            "library": "all",
+            "return_format": "url",
+            "min_width": 0,
+            "min_height": 0,
+            "min_size": 0,
+            "max_width": 0,
+            "max_height": 0,
+            "max_size": 0,
+            "mime_types": ""
+        },
+        {
+            "key": "field_56784323ab3a5",
+            "label": "User Level 3 Icon",
+            "name": "user_level_3_icon",
+            "type": "image",
+            "instructions": "Upload an icon with a minimum of 100x100px.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "preview_size": "thumbnail",
+            "library": "all",
+            "return_format": "url",
+            "min_width": 0,
+            "min_height": 0,
+            "min_size": 0,
+            "max_width": 0,
+            "max_height": 0,
+            "max_size": 0,
+            "mime_types": ""
+        },
+        {
+            "key": "field_5679c187bdc0b",
+            "label": "User Level Icons for Thumbnails",
+            "name": "",
+            "type": "tab",
+            "instructions": "",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "placement": "top",
+            "endpoint": 0
+        },
+        {
+            "key": "field_5a0c17807d589",
+            "label": "User Level 1 Icon Listing",
+            "name": "user_level_1_icon_listing",
+            "type": "image",
+            "instructions": "The \"Rookie Seller\" icon (Level 1) is displayed for jobs posted by Level 1 users, if the option is enabled in Jobster General Settings > User Settings.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
+            "key": "field_5a0c17047d588",
+            "label": "User Level 2 Icon Listing",
+            "name": "user_level_2_icon_listing",
+            "type": "image",
+            "instructions": "The \"Master Seller\" icon (Level 2) is displayed for jobs posted by Level 2 users, if the option is enabled in Jobster General Settings > User Settings.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        },
+        {
+            "key": "field_5678435fab3a7",
+            "label": "User Level 3 Icon Listing",
+            "name": "user_level_3_icon_listing",
+            "type": "image",
+            "instructions": "By default only the \"Top Rated Seller\" icon (Level 3) is displayed, for jobs posted by Level 3 users, if no other option is enabled.",
+            "required": 0,
+            "conditional_logic": 0,
+            "wrapper": {
+                "width": "",
+                "class": "",
+                "id": ""
+            },
+            "return_format": "url",
+            "preview_size": "thumbnail",
+            "library": "all",
+            "min_width": "",
+            "min_height": "",
+            "min_size": "",
+            "max_width": "",
+            "max_height": "",
+            "max_size": "",
+            "mime_types": ""
+        }
+    ],
+    "location": [
+        [
+            {
+                "param": "options_page",
+                "operator": "==",
+                "value": "acf-options"
+            }
+        ]
+    ],
+    "menu_order": 2,
+    "position": "normal",
+    "style": "default",
+    "label_placement": "top",
+    "instruction_placement": "label",
+    "hide_on_screen": "",
+    "active": 1,
+    "description": "",
+    "private": true,
+    "modified": 1511880834
+}

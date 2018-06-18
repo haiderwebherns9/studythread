@@ -1,0 +1,615 @@
+<?php
+function wpj_purchase_this_start_session() {
+	if ( ! isset( $_SESSION ) ) {
+		session_start();
+	}
+}
+
+function wpj_purchase_this_get_currency() {
+	if ( isset( $_POST['site_currency'] ) ) {
+		$selected = $_POST['site_currency'];
+	} elseif ( isset( $_COOKIE["site_currency"] ) ) {
+		$selected = $_COOKIE["site_currency"];
+	} else {
+		$selected = "";
+	}
+
+	return $selected;
+}
+
+function wpj_purchase_this_get_vars() {
+
+	$vars_arr = array();
+
+	// variables
+	global $wp_query;
+	$payment_type = '';
+	$redirect_link = get_bloginfo( 'url' );
+
+	if ( isset( $_GET['jobid'] ) ) {
+		$payment_type  = 'job_purchase';
+		$pid           = $_GET['jobid'];
+		$post          = get_post( $pid );
+		$redirect_link = get_permalink( $pid );
+
+		$_SESSION['confirmationpagevisited'] = $pid;
+		$vars_arr1 = array(
+			'payment_type'  => ( isset( $payment_type )  && $payment_type )  ? $payment_type  : '',
+			'pid' 		    => ( isset( $pid )           && $pid )           ? $pid           : '',
+			'post'  	    => ( isset( $post )          && $post )          ? $post          : '',
+			'redirect_link' => ( isset( $redirect_link ) && $redirect_link ) ? $redirect_link : '',
+		);
+	} else {
+		$pid = false;
+		$vars_arr1 = array(
+			'pid' => $pid
+		);
+	}
+
+	if ( isset( $_GET['oid'] ) && isset( $_GET['custom_extra'] ) ) {
+		$payment_type    = 'custom_extra';
+		$oid             = $_GET['oid'];
+		$custom_extra_id = $_GET['custom_extra'];
+		$order           = wpjobster_get_order_details_by_orderid( $oid );
+		$pid             = $order->pid;
+		$post            = get_post( $pid );
+		$custom_extras   = json_decode($order->custom_extras);
+		$custom_extra    = $custom_extras[$custom_extra_id];
+		$redirect_link   = get_bloginfo( 'url' ) . "/?jb_action=chat_box&oid=" . $oid;
+
+		$_SESSION['confirmationpagevisited'] = $oid;
+
+		$vars_arr2 = array(
+			'payment_type'   => ( isset( $payment_type )    && $payment_type )    ? $payment_type    : '',
+			'oid'            => ( isset( $oid )             && $oid )             ? $oid             : '',
+			'custom_extra_id'=> ( isset( $custom_extra_id ) && $custom_extra_id ) ? $custom_extra_id : '',
+			'order'          => ( isset( $order )           && $order )           ? $order           : '',
+			'pid'            => ( isset( $pid )             && $pid )             ? $pid             : '',
+			'post'           => ( isset( $post )            && $post )            ? $post            : '',
+			'custom_extras'  => ( isset( $custom_extras )   && $custom_extras )   ? $custom_extras   : '',
+			'custom_extra'   => ( isset( $custom_extra )    && $custom_extra )    ? $custom_extra    : '',
+			'redirect_link'  => ( isset( $redirect_link )   && $redirect_link )   ? $redirect_link   : '',
+
+		);
+
+	} else {
+
+		$oid = false;
+		$vars_arr2 = array(
+			'oid' => ( isset( $oid ) && $oid ) ? $oid : '',
+		);
+
+	}
+
+
+	global $current_user;
+	$current_user = wp_get_current_user();
+	$uid = $current_user->ID;
+
+	$crds = wpjobster_get_credits( $current_user->ID );
+	$vars_arr3 = array(
+		'uid'          => ( isset( $uid )          && $uid )          ? $uid          : '',
+		'current_user' => ( isset( $current_user ) && $current_user ) ? $current_user : '',
+		'crds'         => ( isset( $crds )         && $crds )         ? $crds         : '',
+	);
+
+	$vars_arr = array_merge( $vars_arr1, $vars_arr2, $vars_arr3 );
+
+	return $vars_arr;
+
+}
+
+function wpj_purchase_this_redirects() {
+
+	$vars = wpj_purchase_this_get_vars();
+	foreach ($vars as $key => $value) {
+		$$key = $value;
+	}
+
+	// redirects
+	if ( ! is_user_logged_in() ) {
+		wp_redirect( get_bloginfo( 'url' ) . "/wp-login.php?redirect_to=" . urlencode( $redirect_link ) );
+		exit;
+	}
+
+	if ( ! isset( $_POST['purchaseformvalidation'] ) ) {
+		wp_redirect( $redirect_link );
+		exit;
+	}
+
+	if ( $pid && $post->post_author == $current_user->ID ) {
+		wp_redirect( get_bloginfo( 'url' ) );
+		exit;
+	}
+
+	if ( $payment_type == 'job_purchase' && get_post_type( $pid ) == 'offer' ) {
+
+		if ( get_post_meta( $pid, "offer_buyer", true ) != $current_user->ID ) {
+			wp_redirect( get_bloginfo( 'url' ) );
+			exit;
+		}
+		if ( get_post_meta( $pid, "offer_expired", true ) == 0 ) {
+			if ( current_time( 'timestamp', 1 ) > get_post_meta( $pid, "offer_date_expire", true ) ) {
+				update_post_meta( $pid, 'offer_expired', 1 );
+				wpjobster_send_email_allinone_translated( 'offer_exp', get_post_meta( $pid, "offer_buyer", true ), $post->post_author );
+				wpjobster_send_sms_allinone_translated( 'offer_exp', get_post_meta( $pid, "offer_buyer", true ), $post->post_author );
+			}
+		}
+		if ( get_post_meta( $pid, "offer_expired", true ) == 1 ||
+			get_post_meta( $pid, "offer_withdrawn", true ) == 1 ||
+			get_post_meta( $pid, "offer_accepted", true ) == 1 ||
+			get_post_meta( $pid, "offer_declined", true ) == 1 ) {
+
+			wp_redirect( get_bloginfo( 'url' ) );
+			exit;
+		}
+	}
+
+	if ( $payment_type == 'custom_extra' ) {
+		if ( $order->uid != $current_user->ID ) {
+			wp_redirect( get_bloginfo( 'url' ) );
+			exit;
+		}
+		if ( !$custom_extra || $custom_extra->paid == true || $custom_extra->declined == true || $custom_extra->cancelled == true ) {
+			wp_redirect(get_bloginfo('siteurl').'/?jb_action=chat_box&oid='.$oid);
+			exit;
+		}
+	}
+}
+
+function wpj_purchase_this_job_extra() {
+
+	$vars = wpj_purchase_this_get_vars();
+	foreach ($vars as $key => $value) {
+		$$key = $value;
+	}
+
+	$extra_job_add = array();
+	$partial_ttl   = 0;
+	// process extras
+	if ( $payment_type == 'job_purchase' ) {
+		$h             = 0;
+		$extra_job_arr = array();
+
+		for ( $k = 1; $k <= 10; $k ++ ) {
+			$extra_price   = get_post_meta( $pid, 'extra' . $k . '_price', true );
+			$extra_content = get_post_meta( $pid, 'extra' . $k . '_content', true );
+
+			if ( ! empty( $extra_price ) && ! empty( $extra_content ) ) {
+				if ( ! empty( $_POST[ 'extra' . $k ] ) ) {
+
+					$extra_job_add[ $h ]['content']                        = $extra_content;
+					$extra_job_add[ $h ]['price']                          = $extra_price;
+					$extra_job_add[ $h ]['amount']                         = $_POST[ 'extra' . $k ];
+					$extra_job_add[ $h ]['extra_nr']                       = $k;
+					$h ++;
+
+					$extra_job_arr[ 'extra_job' . $pid ][ $h ]['extra_nr'] = $k;
+					$extra_job_arr[ 'extra_job' . $pid ][ $h ]['price']    = $extra_price;
+					$extra_job_arr[ 'extra_job' . $pid ][ $h ]['amount']   = $_POST[ 'extra' . $k ];
+
+					$partial_ttl += $extra_price * $_POST[ 'extra' . $k ];
+				}
+			}
+		}
+		// default extras
+		if ( ! empty( $_POST['extrafast'] ) ) {
+			$extra_fast_price   = get_post_meta( $pid, 'extra_fast_price', true );
+			$extra_fast_amount = WPJ_Form::post( 'extrafast', 1 );
+			$partial_ttl += $extra_fast_price * $extra_fast_amount;
+		} else {
+			$extra_fast_price = "";
+			$extra_fast_amount = "";
+		}
+		if ( ! empty( $_POST['extrarevision'] ) ) {
+			$extra_revision_price   = get_post_meta( $pid, 'extra_revision_price', true );
+			$extra_revision_amount = WPJ_Form::post( 'extrarevision', 1 );
+			$partial_ttl += $extra_revision_price * $extra_revision_amount;
+		}
+	}
+
+	$master_total = 0;
+	$main_amount  = 1;
+	$shipping     = 0;
+	$sample_prc   = 0;
+
+	if ( $payment_type == 'job_purchase' ) {
+		$sample_prc = get_post_meta( $pid, "price", true );
+		if ( empty( $sample_prc ) ) {
+			$sample_prc = get_option( 'wpjobster_job_fixed_amount' );
+		}
+
+		$sample_prc = apply_filters( 'wpjobster_purchase_this_job_price', $sample_prc, $pid );
+		$main_amount = WPJ_Form::post( 'main_value_inp', 1 );
+		$main_amount = ( $main_amount == 'undefined' ) ? 1 : $main_amount;
+		$shipping = get_post_meta( $pid, 'shipping', true );
+		if ( empty( $shipping ) ) {
+			$shipping = 0;
+		}
+
+	} elseif ( $payment_type == 'custom_extra' ) {
+		$sample_prc = $custom_extra->price;
+	}
+
+	$prc = $sample_prc * $main_amount;
+
+	$buyer_processing_fees_enabled      = get_option( 'wpjobster_enable_buyer_processing_fees' );
+	$wpjobster_enable_site_tax          = get_option( 'wpjobster_enable_site_tax' );
+	$wpjobster_enable_processingfee_tax = get_option( 'wpjobster_enable_processingfee_tax' );
+
+	$custom_amount_enabled = 0;
+	$custom_amount_enabled = apply_filters( "wpjobster_check_custom_amount_enabled", $custom_amount_enabled );
+
+	$master_total += $prc;
+
+	$crds = wpjobster_get_credits( $uid );
+
+	$buyer_processing_fees = wpjobster_get_site_processing_fee( $prc, $partial_ttl, $shipping );
+
+	if ( $wpjobster_enable_site_tax == 'yes' && ( $master_total >= 0  || $custom_amount_enabled == 1 ) ) {
+		$country_code = user( $uid, 'country_code' );
+		$wpjobster_tax_percent = wpjobster_get_tax( $country_code );
+		$wpjobster_tax_amount = 0;
+
+		if ( $wpjobster_enable_processingfee_tax == 'yes' && $buyer_processing_fees_enabled != 'disabled' ) {
+			$master_total += $buyer_processing_fees;
+		}
+		$wpjobster_tax_amount = $wpjobster_tax_percent * $master_total / 100;
+	}
+
+	return array(
+		'prc'                                => ( isset( $prc )                                && $prc )                                ? $prc : 0,
+		'extra_job_add'                      => ( isset( $extra_job_add )                      && $extra_job_add )                      ? $extra_job_add : '',
+		'shipping'                           => ( isset( $shipping )                           && $shipping )                           ? $shipping : 0,
+		'master_total'                       => ( isset( $master_total )                       && $master_total )                       ? $master_total : '',
+		'buyer_processing_fees_enabled'      => ( isset( $buyer_processing_fees_enabled )      && $buyer_processing_fees_enabled )      ? $buyer_processing_fees_enabled : '',
+		'wpjobster_enable_site_tax'          => ( isset( $wpjobster_enable_site_tax )          && $wpjobster_enable_site_tax )          ? $wpjobster_enable_site_tax : '',
+		'wpjobster_enable_processingfee_tax' => ( isset( $wpjobster_enable_processingfee_tax ) && $wpjobster_enable_processingfee_tax ) ? $wpjobster_enable_processingfee_tax : '',
+		'custom_amount_enabled'              => ( isset( $custom_amount_enabled )              && $custom_amount_enabled )              ? $custom_amount_enabled : '',
+		'partial_ttl'                        => ( isset( $partial_ttl )                        && $partial_ttl )                        ? $partial_ttl : '',
+		'main_amount'                        => ( isset( $main_amount )                        && $main_amount )                        ? $main_amount : '',
+		'sample_prc'                         => ( isset( $sample_prc )                         && $sample_prc )                         ? $sample_prc : 0,
+		'extra_fast_price'                   => ( isset( $extra_fast_price )                   && $extra_fast_price )                   ? $extra_fast_price : 0,
+		'extra_fast_amount'                  => ( isset( $extra_fast_amount )                  && $extra_fast_amount )                  ? $extra_fast_amount : '',
+		'crds'                               => ( isset( $crds )                               && $crds )                               ? $crds : '',
+		'payment_type'                       => ( isset( $payment_type )                       && $payment_type )                       ? $payment_type : '',
+		'pid'                                => ( isset( $pid )                                && $pid )                                ? $pid : '',
+		'buyer_processing_fees'              => ( isset( $buyer_processing_fees )              && $buyer_processing_fees )              ? $buyer_processing_fees : '',
+		'wpjobster_tax_amount'               => ( isset( $wpjobster_tax_amount )               && $wpjobster_tax_amount )               ? $wpjobster_tax_amount : '',
+		'uid'                                => ( isset( $uid )                                && $uid )                                ? $uid : '',
+		'oid'                                => ( isset( $oid )                                && $oid )                                ? $oid : '',
+		'custom_extra_id'                    => ( isset( $custom_extra_id  )                   && $custom_extra_id )                    ? $custom_extra_id : '',
+		'extra_job_arr'                      => ( isset( $extra_job_arr )                      && $extra_job_arr )                      ? $extra_job_arr : '',
+	);
+
+}
+
+function wpj_purchase_this_job_title() {
+
+	$vars = wpj_purchase_this_get_vars();
+	foreach ($vars as $key => $value) {
+		$$key = $value;
+	}
+
+	if  ( $payment_type == 'job_purchase' ) {
+		if ( get_post_type( $pid ) == 'offer' ) {
+			$this_job_title = __( "Private transaction with", "wpjobster" ) . ' ' . get_userdata( $post->post_author )->user_login;
+		} else {
+			$this_job_title = get_the_title( $pid );
+		}
+		echo apply_filters( 'wpjobster_purchase_this_job_title', $this_job_title, $pid );
+	} elseif ( $payment_type == 'custom_extra' ) {
+		echo $order->job_title;
+	}
+
+}
+
+
+function wpj_purchase_this_job_categories() {
+
+	$vars = wpj_purchase_this_get_vars();
+	foreach ($vars as $key => $value) {
+		$$key = $value;
+	}
+
+	if ( $payment_type == 'job_purchase' ) {
+		echo apply_filters( 'wpjobster_purchase_this_job_categories', wpjobster_display_job_categories(), $pid );
+	} elseif ( $payment_type == 'custom_extra' ) {
+		echo __( "Custom extra: ", "wpjobster" ) . ' ' . $custom_extra->description;
+	}
+
+}
+
+function wpj_purchase_this_job_price() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	}
+
+
+	if( $prc > 0 ) {
+		if ( $main_amount > 1 ) {
+			echo '<span class="amount-nr">' . $main_amount . "<span class='x-sign'> x </span></span>";
+		}
+		echo wpjobster_get_show_price( $sample_prc );
+	} else {
+		if ( wpj_bool_option( 'wpjobster_replace_zero_with_free' ) ) {
+			_e( 'Free', 'wpjobster' );
+		} else {
+			if ( $main_amount > 1 ) {
+				echo '<span class="amount-nr">' . $main_amount . "<span class='x-sign'> x </span></span>";
+			}
+			echo wpjobster_get_show_price( $sample_prc );
+		}
+	}
+}
+
+function wpj_purchase_this_extra_fast() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	} ?>
+
+	<div class="ui two column stackable grid"><?php
+		// default extras
+		if ( ! empty( $_POST['extrafast'] ) ) { ?>
+
+			<div class="ui fitted divider"></div>
+
+			<div class="cf extra-item sixteen wide column" data-extranr="fast" data-extraamount="<?php echo $extra_fast_amount; ?>">
+				<?php echo __( 'Extra fast delivery', 'wpjobster' ); ?>
+				<span class="payment-item-price">
+					<?php if ( $extra_fast_amount > 1 ) {
+						echo '<span class="amount-nr">' . $extra_fast_amount . "<span class='x-sign'> x </span></span>";
+					}
+					echo wpjobster_get_show_price( $extra_fast_price );
+					$master_total += $extra_fast_price * $extra_fast_amount; ?>
+				</span>
+			</div>
+			<?php
+		}
+		if ( ! empty( $_POST['extrarevision'] ) ) {
+			$extra_revision_price  = get_post_meta( $pid, 'extra_revision_price', true );
+			$extra_revision_amount = WPJ_Form::post( 'extrarevision', 1 );
+			?>
+
+			<div class="ui fitted divider"></div>
+
+			<div class="cf extra-item sixteen wide column" data-extranr="revision" data-extraamount="<?php echo $extra_revision_amount; ?>">
+				<?php echo __( 'Extra revision', 'wpjobster' ); ?>
+				<span class="payment-item-price">
+					<?php if ( $extra_revision_amount > 1 ) {
+						echo '<span class="amount-nr">' . $extra_revision_amount . "<span class='x-sign'> x </span></span>";
+					}
+					echo wpjobster_get_show_price( $extra_revision_price );
+					$master_total += $extra_revision_price * $extra_revision_amount; ?>
+				</span>
+			</div>
+		<?php } ?>
+	</div><?php
+
+}
+
+function wpj_purchase_this_extra_job_add() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	}
+
+	if ( count( $extra_job_add ) > 0 ) {
+		if( $extra_job_add ){
+			foreach( $extra_job_add as $extra_job_add_item ) { ?>
+
+				<div class="ui fitted divider"></div>
+
+				<div class="cf extra-item sixteen wide column" data-extranr="<?php echo $extra_job_add_item['extra_nr']; ?>" data-extraamount="<?php echo $extra_job_add_item['amount']; ?>">
+					<?php echo $extra_job_add_item['content']; ?>
+					<span class="payment-item-price">
+					<?php
+						if ( $extra_job_add_item['amount'] > 1 ) {
+							echo '<span class="amount-nr">' . $extra_job_add_item['amount'] . " <span class='x-sign'>x</span> </span>";
+						}
+						echo wpjobster_get_show_price( $extra_job_add_item['price'] );
+						$master_total += $extra_job_add_item['price'] * $extra_job_add_item['amount'];
+					?>
+					</span>
+				</div>
+				<?php
+			}
+		}
+	}
+}
+
+function wpj_purchase_this_shipping() {
+
+	$extras   = wpj_purchase_this_job_extra();
+	$shipping = ( isset( $extras['shipping'] ) ) ? $extras['shipping'] : "";
+
+	if ( ! empty( $shipping ) ) {
+		return $shipping;
+	}else{
+		return 0;
+	}
+
+}
+
+function wpj_purchase_this_processings_fees() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	}
+
+	$master_total += $shipping;
+	if ( $buyer_processing_fees_enabled == 'percent' || $buyer_processing_fees_enabled == 'fixed' && ( $master_total > 0 || $custom_amount_enabled == 1 ) ) {
+		$buyer_processing_fees = wpjobster_get_site_processing_fee( $prc, $partial_ttl, $shipping );
+	}
+
+	if ( ! empty( $buyer_processing_fees ) ) {
+		return $buyer_processing_fees;
+	}else{
+		return 0;
+	}
+
+}
+
+function wpj_purchase_this_tax_job() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	}
+
+	$master_total += $extra_fast_price * $extra_fast_amount;
+	if ( ! empty( $_POST['extrarevision'] ) ) {
+		$extra_revision_price  = get_post_meta( $pid, 'extra_revision_price', true );
+		$extra_revision_amount = WPJ_Form::post( 'extrarevision', 1 );
+
+		$master_total += $extra_revision_price * $extra_revision_amount;
+	}
+	if( $extra_job_add ){
+		foreach( $extra_job_add as $extra_job_add_item ) {
+			$master_total += $extra_job_add_item['price'] * $extra_job_add_item['amount'];
+		}
+	}
+	$master_total += $shipping;
+
+	if ( $wpjobster_enable_site_tax == 'yes' && ( $master_total > 0  || $custom_amount_enabled == 1 ) ) {
+		$country_code = user( $uid, 'country_code' );
+		$wpjobster_tax_percent = wpjobster_get_tax( $country_code );
+		$wpjobster_tax_amount = 0;
+
+		$wpjobster_tax_amount = $wpjobster_tax_percent * $master_total / 100;
+	}
+
+	if ( ! empty( $wpjobster_tax_amount ) ) {
+		return $wpjobster_tax_amount;
+	}else{
+		return 0;
+	}
+}
+
+function wpj_purchase_this_payment_methods() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	}
+
+	$extrs          = '';
+	$extrs2         = '';
+	$extrs_amounts  = '';
+	$extrs_amounts2 = '';
+
+	if ( isset( $extra_job_arr['extra_job' . $pid] ) && $extra_job_arr['extra_job' . $pid] ) {
+		foreach( $extra_job_arr['extra_job' . $pid] as $ar_and ) {
+			$extrs .= $ar_and['extra_nr'] . '|';
+			$extrs2 .= $ar_and['extra_nr'] . '_';
+			$extrs_amounts .= $ar_and['amount'] . '|';
+			$extrs_amounts2 .= $ar_and['amount'] . '_';
+		}
+	}
+
+	if ( ! empty( $_POST['extrafast'] ) ) {
+		$extra_fast_amount = WPJ_Form::post( 'extrafast', 1 );
+		$extrs .= 'f|'; // fast
+		$extrs2 .= 'f_';
+		$extrs_amounts .= $extra_fast_amount . '|';
+		$extrs_amounts2 .= $extra_fast_amount . '_';
+	}
+	if ( ! empty( $_POST['extrarevision'] ) ) {
+		$extra_revision_amount = WPJ_Form::post( 'extrarevision', 1 );
+		$extrs .= 'r|'; // revision
+		$extrs2 .= 'r_';
+		$extrs_amounts .= $extra_revision_amount . '|';
+		$extrs_amounts2 .= $extra_revision_amount . '_';
+	}
+
+	$wpj_purchase_this_total_price = wpj_purchase_this_total_price();
+	if ( $wpj_purchase_this_total_price['total_filtered'] > 0 || $custom_amount_enabled == 1 ) {
+		// balance
+		if ( $crds >= ( $prc + $partial_ttl + $shipping+$buyer_processing_fees ) ) {
+			if ( get_option( 'wpjobster_credits_enable' ) != 'no' ) { ?>
+				<a href="javascript:void(0);" onclick='take_to_gateway("credits");' class="ui white button" id="credits"><?php _e( 'Account Balance', 'wpjobster' ); ?></a>
+			<?php }
+		}
+
+		$wpjobster_payment_gateways = get_wpjobster_payment_gateways();
+
+		$wpjobster_payment_gateways = apply_filters( 'wpj_job_purchase_gateways', get_wpjobster_payment_gateways() );
+		if( $wpjobster_payment_gateways ){
+			foreach ( $wpjobster_payment_gateways as $priority=>$button_arr ) {
+
+
+				$wpjobster_gateway_enable              = get_option('wpjobster_'.$button_arr['unique_id'].'_enable');
+				$wpjobster_gateway_enable_payment_type = 'yes';
+				$wpjobster_gateway_enablepopup         = get_option('wpjobster_'.$button_arr['unique_id'].'_enablepopup');
+
+
+				if ( $payment_type == 'custom_extra' ) {
+					$wpjobster_gateway_enable_payment_type = get_option('wpjobster_'.$button_arr['unique_id'].'_enable_custom_extra');
+				}
+
+				if ( ( $wpjobster_gateway_enable == "yes"
+					&& $wpjobster_gateway_enable_payment_type == 'yes' ) ) {
+					do_action( 'wpjobster_before_' . $button_arr['unique_id'] . '_link', $pid, $extrs ); ?>
+					<a href="javascript:void(0);" onclick='take_to_gateway( "<?php echo $button_arr['unique_id']; ?>", "<?php echo $wpjobster_gateway_enablepopup; ?>");' class="ui white button" id="<?php echo $button_arr['unique_id']; ?>">
+					<?php
+						$wpjobster_gateway_button_caption = get_option('wpjobster_'.$button_arr['unique_id'].'_button_caption');
+						if ( $wpjobster_gateway_button_caption != '' ) {
+							echo $wpjobster_gateway_button_caption;
+						} else {
+							echo $button_arr['unique_id'] ;
+						}
+					?>
+					</a>
+					<?php
+					do_action('wpjobster_after_'.$button_arr['unique_id'].'_link' , $pid, $extrs);
+				}
+			} // foreach
+		}
+
+	} else {
+
+		do_action( 'wpjobster_before_get_for_free_link', $pid, $extrs );
+		?>
+		<a href="<?php bloginfo('url'); ?>/?pay_for_item=get_for_free&jobid=<?php echo $pid; ?>&extras=<?php echo $extrs; ?>"
+			class="ui white button" id="getforfree"><?php _e('Get for free','wpjobster'); ?></a>
+		<?php
+		do_action('wpjobster_after_get_for_free_link' , $pid, $extrs);
+	} ?>
+
+	<?php
+	if ( $payment_type == 'job_purchase' ) {
+		$total_amount = wpj_purchase_this_total_price();
+		do_action( "wpjobster_check_payment_gateway", $pid, $main_amount, $extrs2, $extrs_amounts2, $total_amount['total_filtered'] );
+
+	} elseif ( $payment_type == 'custom_extra' ) {
+
+		do_action( "wpjobster_check_payment_gateway2", $oid, $main_amount, $custom_extra_id );
+
+	}
+
+	do_action( 'wpjobster_purchase_job_add_payment_method', $pid, $extrs );
+	do_action( "wpjobster_check_total_input", $master_total );
+}
+
+function wpj_purchase_this_total_price() {
+
+	$extras = wpj_purchase_this_job_extra();
+	foreach ($extras as $key => $value) {
+		$$key = $value;
+	}
+
+	$wpjobster_tax_amount = wpj_purchase_this_tax_job();
+
+	$payment_total_price = $prc + $partial_ttl + $shipping + $buyer_processing_fees + $wpjobster_tax_amount;
+
+	$payment_total_price_filtered = apply_filters( 'wpj_price_filter', $payment_total_price );
+
+	return array( 'total_filtered' => $payment_total_price_filtered, 'total_orig' => $payment_total_price );
+
+}

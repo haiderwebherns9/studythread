@@ -1,0 +1,657 @@
+/**
+ * # Semantic UI - 2.2.6 - Custom adjustments
+ */
+
+/**
+ * Custom class for left-side label
+ */
+
+.ui.toggle.checkbox.label-left label {
+	padding-left: 0;
+	padding-right: 4.5rem;
+}
+
+.ui.checkbox.label-left input,
+.ui.toggle.checkbox.label-left label:before {
+	left: auto;
+	right: 0;
+}
+
+.ui.toggle.checkbox.label-left label:after {
+	left: auto;
+	right: 2.15rem;
+	-webkit-transition: background .3s ease, right .3s ease;
+	transition: background .3s ease, right .3s ease;
+}
+
+.ui.toggle.checkbox.label-left input:checked + label:after {
+	left: auto;
+	right: -.05rem;
+}
+
+/**
+ * Smaller Modal Width
+ */
+
+@media only screen and (max-width: 479px) {
+	.ui.smaller.modal {
+		width: 95%;
+		margin: 0em 0em 0em -47.5%;
+	}
+}
+
+@media only screen and (min-width: 480px) {
+	.ui.smaller.modal {
+		width: 460px;
+		margin: 0em 0em 0em -230px;
+	}
+}
+
+
+/**
+ * Tiny Modal Width
+ */
+
+@media only screen and (max-width: 479px) {
+	.ui.tiny.modal {
+		width: 95%;
+		margin: 0em 0em 0em -47.5%;
+	}
+}
+
+@media only screen and (min-width: 480px) {
+	.ui.tiny.modal {
+		width: 300px;
+		margin: 0em 0em 0em -150px;
+	}
+}
+
+@media only screen and (max-width:375px) {
+	.ui.modal>.actions {
+		text-align: center;
+		float: none;
+	}
+}
+
+
+/**
+ * Tight Grid
+ */
+
+.ui.tight.grid {
+	margin-left: -0.5rem;
+	margin-right: -0.5rem;
+}
+
+.ui.tight.grid > .column:not(.row),
+.ui.tight.grid > .row > .column,
+.ui.grid > .tight.row > .column {
+	padding-left: 0.5rem;
+	padding-right: 0.5rem;
+}
+
+.ui.tight.grid .row + .ui.divider,
+.ui.grid .tight.row + .ui.divider {
+	margin-left: 0.5rem;
+	margin-right: 0.5rem;
+}
+
+
+/**
+ * General Semantic UI Styles
+ */
+
+.ui.notpadded.segment {
+	padding: 0;
+}
+
+.ui.button.nomargin {
+	margin: 0;
+}
+
+.feature-payment .ui.button{
+	margin: 0em 0em 0.25em 0em !important;
+}
+.payment-buttons .ui.button,
+.payment-gateways .ui.button{
+	margin: 0em 0.25em 0.25em 0em !important;
+}
+
+.ui.segments,
+.ui.segment,
+.ui.card, .ui.cards>.card {
+	border: 0;
+	border-radius: 0.21428571428rem;
+	box-shadow: 0 1px 5px -1px rgba(0,0,0,.13);
+}
+
+.ui.card:hover, .ui.cards>.card:hover {
+	text-decoration: none;
+	box-shadow: 0 2px 10px -2px rgba(0,0,0,.2);
+}
+
+.ui.grid.block {
+	display: block;
+}
+
+/**
+ * Small Semantic UI Fixes
+ */
+
+.ui.action.input:not([class*="left action"]) > .ui.input > input:focus {
+	border-right-color: #83C124 !important;
+}
+
+.ui.action.input:not([class*="left action"]) > .ui.input > input {
+	border-top-right-radius: 0!important;
+	border-bottom-right-radius: 0!important;
+	border-right-color: transparent!important;
+}
+
+.ui.action.input > input + input,
+.ui.action.input > .ui.input + .ui.input > input {
+	border-top-left-radius: 0!important;
+	border-bottom-left-radius: 0!important;
+}
+
+.ui.modal .content .actions {
+	background: #F9FAFB;
+	padding: 1rem;
+	border-top: 1px solid rgba(34,36,38,.15);
+	text-align: right;
+	margin: 1.5rem -1.5rem -1.5rem;
+}
+
+.ui.modal form {
+	margin-bottom: 0;
+}
+
+.ui.basic.labeled.icon.button > .icon,
+.ui.basic.labeled.icon.buttons > .button > .icon {
+	background-color: rgba(0, 0, 0, 0.02);
+}
+
+.ui.fluid.labeled.icon.button,
+.ui.fluid[class*="left labeled"].icon.button {
+	padding-left: 3.57142857em!important;
+	padding-right: 1em!important;
+}
+
+.ui.fluid[class*="right labeled"].icon.button {
+	padding-left: 1em!important;
+	padding-right: 3.57142857em!important;
+}
+
+@media only screen and (max-width:767px) {
+	.ui.stackable.grid {
+		margin-left: -1rem !important;
+		margin-right: -1rem !important;
+	}
+
+	.ui.container > .ui.stackable.grid > .column,
+	.ui.container > .ui.stackable.grid > .row > .column {
+		padding-left: 1em !important;
+		padding-right: 1em !important;
+	}
+}
+
+/**
+ * Semantic UI Colors
+ */
+
+.ui.card > .content > a.header:hover,
+.ui.cards > .card > .content > a.header:hover {
+	color: #83C124;
+}
+
+/**
+ * Semantic UI Colors
+ */
+
+.ui.white.button {
+	box-shadow: 0px 0em 0px 0px rgba(34, 36, 38, 0.15) inset;
+}
+
+.ui.white.buttons .button, .ui.white.button {
+	background-color: #FFFFFF;
+	color: rgba(0, 0, 0, 0.6);
+	text-shadow: none;
+	background-image: none;
+	border: 1px solid #F1F2F3;
+}
+
+.ui.white.buttons .button:hover, .ui.white.button:hover,
+.ui.white.buttons .button.active, .ui.white.button.active {
+	background-color: #EEEEEF;
+	color: rgba(0, 0, 0, 0.8);
+	text-shadow: none;
+	border: 1px solid #E7E8E9;
+}
+
+.ui.white.buttons .button:active, .ui.white.button:active {
+	background-color: #DDDEDF;
+	color: rgba(0, 0, 0, 0.9);
+	text-shadow: none;
+	border: 1px solid #D6D7D8;
+}
+
+
+/**
+ * Custom title icon
+ */
+
+.ui.header.wpj-title-icon > .icon {
+	color: #83C124;
+	font-size: 1em;
+	margin-right: 0;
+	vertical-align: initial;
+}
+
+
+/**
+ * Custom UI Cards margin
+ */
+
+.ui.one.cards,
+.ui.three.cards,
+.ui.four.cards {
+	margin: -0.5em;
+}
+
+.ui.one.cards>.card {
+	width: calc(100% - 1em);
+	margin: 0.5em;
+}
+
+.ui.three.cards>.card {
+	width: calc(33.33333333% - 1em);
+	margin: 0.5em;
+}
+
+.ui.four.cards>.card {
+	width: calc(25% - 1em);
+	margin: 0.5em;
+}
+
+
+/**
+ * Custom UI Cards Padding
+ */
+
+/*.ui.card,
+.ui.cards>.card {
+	padding: 0.36em;
+}
+
+.ui.card>.content,
+.ui.cards>.card>.content {
+	margin-left: -0.36em;
+	margin-right: -0.35em;
+	max-width: calc(100% + 0.72em);
+}*/
+
+/*.ui.card>.content:first-child,
+.ui.cards>.card>.content:first-child {
+	margin-top: -0.36em;
+}*/
+
+/*.ui.card>.content:last-child,
+.ui.cards>.card>.content:last-child {
+	margin-bottom: -0.36em;
+}*/
+
+
+/**
+ * Custom UI Cards Images
+ */
+
+.ui.card>.image,
+.ui.cards>.card>.image {
+	overflow: hidden;
+	display: block;
+	width: 100%;
+	background: #fff;
+}
+
+.ui.card>.image .card-image-helper,
+.ui.cards>.card>.image .card-image-helper {
+	height: 0;
+	padding-bottom: 66.6666%;
+	overflow: hidden;
+	display: table; /* Firefox Fix */
+	width: 100%; /* Safari Fix after Firefox Fix */
+}
+
+.ui.card>.image img,
+.ui.cards>.card>.image img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: inherit;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+.ui.card>.image img.card-blurry-bg,
+.ui.cards>.card>.image img.card-blurry-bg {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 0;
+	transform: scale(1.1);
+	-webkit-filter: blur(20px);
+	filter: blur(20px);
+	opacity: .6;
+}
+
+/**
+ * Custom UI Cards Pusher
+ */
+
+.card-pusher-overflow {
+	overflow: hidden;
+}
+
+.ui.card .card-pusher-master,
+.ui.cards>.card .card-pusher-master {
+	margin-top: -2.5em;
+	padding: 0.5em 0.75em;
+	height: 2.5em;
+	max-height: 2.5em;
+	display: flex;
+}
+
+.ui.card .card-pusher-master,
+.ui.cards>.card .card-pusher-master,
+.ui.card .card-pusher-slave,
+.ui.cards>.card .card-pusher-slave {
+	-webkit-transition: transform 0.15s;
+	transition: transform 0.15s;
+}
+
+.ui.card:hover .card-pusher-master,
+.ui.cards>.card:hover .card-pusher-master,
+.ui.card:hover .card-pusher-slave,
+.ui.cards>.card:hover .card-pusher-slave {
+	-webkit-transform: translateY(2.5em);
+	transform: translateY(2.5em);
+}
+
+.ui.card .card-pusher-cover,
+.ui.cards>.card .card-pusher-cover {
+	z-index: 1;
+	background: #fff;
+}
+
+
+/**
+ * Custom UI Cards Stars
+ */
+
+.wpj-star-rating-static {
+	font-size: 1.2em;
+	line-height: 1.5rem;
+}
+
+.wpj-star-rating-static .star.icon,
+.user-profile .star.icon {
+	color: #F2B827;
+	cursor: auto;
+	opacity: 1;
+	margin: 0 !important;
+	width: 0.8em;
+}
+
+.wpj-star-rating-static .star.icon:hover,
+.user-profile .star.icon:hover {
+	color: #F2B827;
+}
+
+.ui.card>.content .card-job-price,
+.ui.cards>.card>.content .card-job-price {
+	font-size: 1.2em;
+	font-weight: 700;
+	color: #83c123;
+}
+
+.ui.card>.content .card-old-icon,
+.ui.cards>.card>.content .card-old-icon {
+	width: 22px;
+	display: inline-block;
+}
+
+.ui.card>.content .card-old-icon img,
+.ui.cards>.card>.content .card-old-icon img {
+	width: 100%;
+	height: auto;
+}
+
+.ui.card>.content .card-rating,
+.ui.cards>.card>.content .card-rating {
+	float: none;
+	flex: 1 0 auto;
+	order: 1;
+	text-align: right;
+}
+
+.ui.card>.content .card-username,
+.ui.cards>.card>.content .card-username {
+	float: none;
+	flex: 0 1 auto;
+	order: 0;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	padding-right: 0.3em;
+	padding-left: 0;
+}
+
+/**
+ * Custom UI Cards Other Styles
+ */
+
+.ui.card .avatar img,
+.ui.card img.avatar,
+.ui.cards>.card .avatar img,
+.ui.cards>.card img.avatar {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.ui.card>.extra, .ui.cards>.card>.extra {
+	padding: .75em;
+}
+
+/**
+ * Custom UI Cards Slider Styles
+ */
+
+.owl-carousel .card {
+	width: 100%;
+	margin: 0;
+}
+
+.owl-carousel .ui.card>.image .card-image-helper,
+.owl-carousel .ui.cards>.card>.image .card-image-helper {
+	padding-bottom: 45.2674%;
+}
+
+
+/**
+ * Custom UI Cards List Undo Stuff
+ */
+
+.ui.list-grid.card .card-pusher-master,
+.ui.list-grid.cards > .card .card-pusher-master {
+	order: 2;
+	margin: 0;
+}
+
+.ui.list-grid.card:hover .card-pusher-master,
+.ui.list-grid.cards>.card:hover .card-pusher-master,
+.ui.list-grid.card:hover .card-pusher-slave,
+.ui.list-grid.cards>.card:hover .card-pusher-slave {
+	-webkit-transform: none;
+	transform: none;
+}
+
+/**
+ * Custom UI Cards List Do Stuff
+ */
+
+.ui.list-grid.cards>.card,
+.ui.list-grid.one.cards>.card,
+.ui.list-grid.three.cards>.card,
+.ui.list-grid.four.cards>.card {
+	width: calc(100% - 1em);
+	margin: 0.5em;
+}
+
+.ui.list-grid.card>.image,
+.ui.list-grid.cards>.card>.image {
+	flex: none;
+	height: auto;
+	padding-bottom: 0;
+	overflow: hidden;
+	display: block;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 30%
+}
+
+.ui.list-grid.card .card-pusher-master,
+.ui.list-grid.cards>.card .card-pusher-master,
+.ui.list-grid.card .card-pusher-cover,
+.ui.list-grid.cards>.card .card-pusher-cover,
+.ui.list-grid.card > .extra,
+.ui.list-grid.cards > .card > .extra {
+	margin: 0 0 0 auto;
+	width: 70%;
+}
+
+.ui.list-grid.card .card-pusher-cover,
+.ui.list-grid.cards>.card .card-pusher-cover {
+	order: 1;
+	border-top: 0;
+}
+
+.ui.list-grid.card .card-pusher-master,
+.ui.list-grid.cards>.card .card-pusher-master {
+	order: 2;
+}
+
+.ui.list-grid.card > .extra,
+.ui.list-grid.cards > .card > .extra {
+	order: 3;
+}
+
+/*.ui.list-grid.three.cards>.card>.image {
+	width: 33.33333333%;
+}
+
+.ui.list-grid.four.cards>.card>.image {
+	width: 25%;
+}*/
+
+
+
+
+/**
+ * AJAX Message in Modal Helper
+ */
+
+.ui.modal > .content > .messages .ui.message:first-child {
+	margin-top: 1em;
+}
+
+.column.content-left {
+	padding-right: 0 !important;
+	padding-top: 0 !important;
+}
+
+.column.content-right {
+	padding-top: 0 !important;
+}
+
+
+/**
+ * Fix Visual Composer conflict with Semantic UI icons
+ */
+
+i.icon {
+	display: inline-block;
+	width: 1.18em;
+	height: 1em;
+	line-height: normal;
+	vertical-align: baseline;
+	margin: 0em 0.25rem 0em 0em;
+}
+
+/**
+ * Fix iOS 11 input in modal caret bug
+ */
+
+body.ios11.dimmed.dimmable {
+	position: fixed;
+	width: 100%;
+}
+
+/**
+ * Responsive
+ */
+
+/* Tablet and Mobile - 768 iPad and less */
+@media only screen and (max-width:991px) {
+	.ui.three.cards>.card,
+	.ui.four.cards>.card {
+		width: calc(33.33333333% - 1em);
+		margin: 0.5em;
+	}
+}
+
+
+/* Mobile Landscape - 480 phones and less */
+@media only screen and (max-width:767px) {
+	.ui.three.cards>.card,
+	.ui.four.cards>.card {
+		width: calc(50% - 1em);
+		margin: 0.5em;
+	}
+
+	.ui.modal .content .actions {
+		background: transparent;
+	}
+
+	.stackable-buttons .ui.button {
+		width: 100%;
+	}
+
+	.stackable-buttons .ui.button:not(:last-child) {
+		margin-bottom: -1px;
+	}
+
+	.stackable-buttons.right {
+		float: none;
+	}
+}
+
+
+/* Mobile - 300 or fluid */
+@media only screen and (max-width:479px) {
+	.ui.three.cards>.card,
+	.ui.four.cards>.card {
+		width: calc(100% - 1em);
+		margin: 0.5em;
+	}
+
+}

@@ -1,0 +1,8 @@
+/*******************************
+    User Variable Overrides
+*******************************/
+
+@inputFocusBorderColor    : @primaryColor;
+@textAreaFocusBorderColor : @primaryColor;
+@inputAutoFillFocusBorder : @primaryColor;
+@invertedInputBorderColor : @primaryColor;

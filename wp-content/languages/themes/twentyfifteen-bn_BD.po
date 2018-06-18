@@ -1,0 +1,298 @@
+# Translation of Themes - Twenty Fifteen in Bengali
+# This file is distributed under the same license as the Themes - Twenty Fifteen package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-08-18 16:52:12+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: GlotPress/2.4.0-alpha\n"
+"Language: bn\n"
+"Project-Id-Version: Themes - Twenty Fifteen\n"
+
+#. Description of the plugin/theme
+msgid "Our 2015 default theme is clean, blog-focused, and designed for clarity. Twenty Fifteen's simple, straightforward typography is readable on a wide variety of screen sizes, and suitable for multiple languages. We designed it using a mobile-first approach, meaning your content takes center-stage, regardless of whether your visitors arrive by smartphone, tablet, laptop, or desktop computer."
+msgstr "আমাদের ২০১৫ ডিফল্ট থিম পরিচ্ছন্ন, ব্লগ-কেন্দ্রিক এবং স্পষ্ট পড়ার জন্য ডিজাইন করা হয়েছে। টুয়েন্টি ফিফটিনের সাদামাটা, সরল টাইপোগ্রাফি বিভিন্ন আকারের স্ক্রিন সাইজে পড়া যায় এবং একাধিক ভাষার জন্য প্রযোজ্য। আমরা একে মোবাইল ডিভাইসের কথা চিন্তা করে ডিজাইন করেছি, অর্থাৎ আপনার ভিজিটর স্মার্টফোন, ট্যাবলেট, ল্যাপটপ অথবা ডেস্কটপ কম্পিউটার, যেখান থেকেই আসুক না কেন, আপনার কন্টেন্ট মাঝ বরাবর থাকবে।"
+
+#. Theme Name of the plugin/theme
+msgid "Twenty Fifteen"
+msgstr "Twenty Fifteen"
+
+#. translators: %s: post title
+#: inc/template-tags.php:123
+msgid "Leave a comment<span class=\"screen-reader-text\"> on %s</span>"
+msgstr "<span class=\"screen-reader-text\">%s এ</span> মন্তব্য করুন"
+
+#: single.php:37
+msgid "Previous post:"
+msgstr " পূর্ববর্তী পোস্ট"
+
+#: single.php:36
+msgid "Previous"
+msgstr "পূর্ববর্তী"
+
+#: single.php:34
+msgid "Next post:"
+msgstr "পরবর্তী পোস্ট "
+
+#: single.php:33
+msgid "Next"
+msgstr "পরবর্তী"
+
+#: search.php:18
+msgid "Search Results for: %s"
+msgstr "%s এর জন্য খোঁজার ফলাফল"
+
+#: inc/template-tags.php:113
+msgctxt "Used before full size attachment link."
+msgid "Full size"
+msgstr "পূর্ণ আঁকার"
+
+#: inc/template-tags.php:102
+msgctxt "Used before tag names."
+msgid "Tags"
+msgstr "ট্যাগ সমূহ"
+
+#: inc/template-tags.php:94
+msgctxt "Used before category names."
+msgid "Categories"
+msgstr "বিভাগ সমূহ "
+
+#: inc/template-tags.php:91 inc/template-tags.php:99
+msgctxt "Used between list items, there is a space after the comma."
+msgid ", "
+msgstr ","
+
+#: inc/template-tags.php:85
+msgctxt "Used before post author name."
+msgid "Author"
+msgstr "লেখক"
+
+#: inc/template-tags.php:76
+msgctxt "Used before publish date."
+msgid "Posted on"
+msgstr "পোস্ট করার তারিখ"
+
+#: inc/template-tags.php:55
+msgctxt "Used before post format."
+msgid "Format"
+msgstr "ধরন"
+
+#: inc/template-tags.php:49
+msgid "Featured"
+msgstr "ফিচার্ড"
+
+#: inc/template-tags.php:30
+msgid "Newer Comments"
+msgstr "নূতন মন্তব্যসমূহ"
+
+#: inc/template-tags.php:26
+msgid "Older Comments"
+msgstr "পুরনো মন্তব্যসমূহ"
+
+#: inc/template-tags.php:23
+msgid "Comment navigation"
+msgstr "মন্তব্যের নেভিগেশন"
+
+#: inc/customizer.php:205
+msgid "Blue"
+msgstr "নীল"
+
+#: inc/customizer.php:194
+msgid "Purple"
+msgstr "বেগুনী"
+
+#: inc/customizer.php:183
+msgid "Pink"
+msgstr "গোলাপী"
+
+#: inc/customizer.php:172
+msgid "Yellow"
+msgstr "হলুদ"
+
+#: inc/customizer.php:161
+msgid "Dark"
+msgstr "গাঢ়"
+
+#: inc/customizer.php:150
+msgid "Default"
+msgstr "ডিফল্ট"
+
+#: inc/customizer.php:75
+msgid "Header and Sidebar Background Color"
+msgstr "হেডার এবং সাইডবার এর ব্যাকগ্রাউন্ড রঙ"
+
+#: inc/customizer.php:60 inc/customizer.php:76 inc/customizer.php:81
+msgid "Applied to the header on small screens and the sidebar on wide screens."
+msgstr "ছোট পর্দার হেডার এবং দীর্ঘ পর্দার সাইডবার এ প্রয়োগ হয়।"
+
+#: inc/customizer.php:59
+msgid "Header and Sidebar Text Color"
+msgstr "হেডার এবং সাইডবার টেক্সট কালার"
+
+#: inc/customizer.php:44
+msgid "Base Color Scheme"
+msgstr "মূল কালার স্কিম"
+
+#: inc/back-compat.php:37 inc/back-compat.php:47 inc/back-compat.php:60
+msgid "Twenty Fifteen requires at least WordPress version 4.1. You are running version %s. Please upgrade and try again."
+msgstr "Twenty Fifteen থিমের জন্য অন্ততপক্ষে WordPress 4.1 ভার্সন প্রয়োজন। আপনি চালাচ্ছেন %s ভার্সন। অনুগ্রহ করে আপগ্রেড করে পুনরায় চেষ্টা করুন।"
+
+#: image.php:84
+msgctxt "Parent post link"
+msgid "<span class=\"meta-nav\">Published in</span><span class=\"post-title\">%title</span>"
+msgstr "<span class=\"post-title\">%title</span><span class=\"meta-nav\">এ প্রকাশ করা হয়েছে</span>"
+
+#: image.php:24
+msgid "Next Image"
+msgstr "পরের ছবি"
+
+#: image.php:24
+msgid "Previous Image"
+msgstr "আগের ছবি"
+
+#: header.php:45
+msgid "Menu and widgets"
+msgstr "মেনু এবং উইজেটসমূহ"
+
+#: header.php:26
+msgid "Skip to content"
+msgstr "এড়িেয় লেখায় যান"
+
+#: functions.php:283
+msgid "collapse child menu"
+msgstr "চাইল্ড মেনু সঙ্কুচিত করুন"
+
+#: functions.php:282
+msgid "expand child menu"
+msgstr "চাইল্ড মেনু সম্প্রসারিত করুন"
+
+#. Translators: To add an additional character subset specific to your
+#. language, translate this to 'greek', 'cyrillic', 'devanagari' or
+#. 'vietnamese'. Do not translate into your own language.
+#: functions.php:212
+msgctxt "Add new subset (greek, cyrillic, devanagari, vietnamese)"
+msgid "no-subset"
+msgstr "devanagari"
+
+#. Translators: If there are characters in your language that are not supported
+#. by Inconsolata, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:204
+msgctxt "Inconsolata font: on or off"
+msgid "on"
+msgstr "off"
+
+#. Translators: If there are characters in your language that are not supported
+#. by Noto Serif, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:196
+msgctxt "Noto Serif font: on or off"
+msgid "on"
+msgstr "off"
+
+#. Translators: If there are characters in your language that are not supported
+#. by Noto Sans, translate this to 'off'. Do not translate into your own
+#. language.
+#: functions.php:188
+msgctxt "Noto Sans font: on or off"
+msgid "on"
+msgstr "off"
+
+#: functions.php:162
+msgid "Add widgets here to appear in your sidebar."
+msgstr "আপনার সাইডবারে প্রদর্শনের জন্য এখানে উইজেটসমূহ যুক্ত করুন।"
+
+#: functions.php:160
+msgid "Widget Area"
+msgstr "উইজেট এরিয়া"
+
+#: functions.php:86
+msgid "Social Links Menu"
+msgstr "সোশ্যাল লিঙ্কের মেনু"
+
+#: functions.php:85
+msgid "Primary Menu"
+msgstr "প্রাথমিক মেনু"
+
+#: footer.php:25
+msgid "Proudly powered by %s"
+msgstr "%s দ্বারা সদম্ভে চালিত হচ্ছে"
+
+#. #-#-#-#-#  twentyfifteen.pot (Twenty Fifteen 1.9)  #-#-#-#-#
+#. Author URI of the plugin/theme
+#: footer.php:25
+msgid "https://wordpress.org/"
+msgstr "https://wordpress.org/ "
+
+#: content-none.php:31
+msgid "It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help."
+msgstr "মনে হচ্ছে আপনি যেটি খুঁজছেন সেটি আমরা খুঁজে পাইনি। সম্ভবত খুঁজলে পাওয়া যাবে।"
+
+#: content-none.php:26
+msgid "Sorry, but nothing matched your search terms. Please try again with some different keywords."
+msgstr "দুঃখিত, কোনকিছু আপনার অনুসন্ধানকৃত বিষয়ের সাথে মিলেনি। অনুগ্রহ করে কিছু ভিন্ন কীওয়ার্ড দ্বারা আবার চেষ্টা করুন।"
+
+#: content-none.php:22
+msgid "Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr "আপনার প্রথম পোস্ট প্রকাশ করার জন্য প্রস্তুত? <a href=\"%1$s\">এখান থেকে শুরু করুন</a>।"
+
+#: content-none.php:15
+msgid "Nothing Found"
+msgstr "কিছুই পাওয়া যায় নি"
+
+#: content-link.php:56 content-page.php:35 content-search.php:28
+#: content-search.php:33 content.php:57 image.php:71
+msgid "Edit"
+msgstr "সম্পাদনা"
+
+#: content-link.php:36 content-page.php:25 content.php:38 image.php:59
+msgid "Pages:"
+msgstr "পাতাগুলি:"
+
+#. translators: %s: Name of current post
+#: content-link.php:31 content.php:33 inc/template-tags.php:238
+msgid "Continue reading %s"
+msgstr "পড়তে থাকুন %s"
+
+#: comments.php:69
+msgid "Comments are closed."
+msgstr "মন্তব্য প্রধান বন্ধ আছে।"
+
+#: author-bio.php:34
+msgid "View all posts by %s"
+msgstr "%s এর সকল পোস্ট দেখুন"
+
+#: author-bio.php:12
+msgid "Published by"
+msgstr "প্রকাশ করেছেন"
+
+#: archive.php:51 content-link.php:40 content-page.php:29 content.php:42
+#: image.php:63 index.php:48 search.php:40
+msgid "Page"
+msgstr "পাতা"
+
+#: archive.php:50 index.php:47 search.php:39
+msgid "Next page"
+msgstr "পরের পাতা"
+
+#: archive.php:49 index.php:46 search.php:38
+msgid "Previous page"
+msgstr "পেছনের পাতা"
+
+#: 404.php:21
+msgid "It looks like nothing was found at this location. Maybe try a search?"
+msgstr "দেখে মনে হচ্ছে এই জায়গায় কিছুই পাওয়া যায় নি। হয়তো সার্চ করে দেখতে পারেন?"
+
+#: 404.php:17
+msgid "Oops! That page can&rsquo;t be found."
+msgstr "উফ! ঐ পাতাটি পাওয়া যায়নি।"
+
+#. Author of the plugin/theme
+msgid "the WordPress team"
+msgstr "ওয়ার্ডপ্রেস টিম"
+
+#. Theme URI of the plugin/theme
+msgid "https://wordpress.org/themes/twentyfifteen/"
+msgstr "https://wordpress.org/themes/twentyfifteen/"

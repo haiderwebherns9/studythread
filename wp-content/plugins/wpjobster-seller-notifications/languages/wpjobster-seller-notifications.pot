@@ -1,0 +1,78 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-07-04 21:07+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco - https://localise.biz/"
+
+#: wpjobster-seller-notifications.php:82
+msgid "Settings"
+msgstr ""
+
+#. Name of the plugin
+#: wpjobster-seller-notifications.php:90
+msgid "WPJobster Seller Notifications"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:90 wpjobster-seller-notifications.php:101
+msgid "Seller Notifications"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:98
+msgid "Seller notifications"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:110
+msgid "Yes"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:111
+msgid "No"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:116
+msgid "Jobster - Seller Notifications"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:119
+msgid "Email"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:120
+msgid "SMS"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:351
+msgid "Requests Notifications"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:473
+msgid "New Request Notification"
+msgstr ""
+
+#: wpjobster-seller-notifications.php:501
+msgid "Notifications"
+msgstr ""
+
+#. Description of the plugin
+msgid ""
+"Send notifications to sellers about the new requests posted in the "
+"categories they follow."
+msgstr ""
+
+#. Author of the plugin
+msgid "WPJobster"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "http://wpjobster.com/"
+msgstr ""

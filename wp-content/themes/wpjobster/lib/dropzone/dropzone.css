@@ -1,0 +1,219 @@
+.cf:before,
+.cf:after {
+	content: "";
+	display: table;
+}
+
+.cf:after {
+	clear: both;
+}
+
+.cf {
+	zoom: 1;
+}
+
+.delete-this {
+	display: none;
+	width: 0;
+	height: 0;
+	border-left: 32px solid transparent;
+	border-top: 32px solid #f00;
+	border-right: 0;
+	position: absolute;
+	top: 0;
+	right: 0;
+	left: auto;
+}
+
+.delete-this:after {
+	content: "";
+	background: url("../../images/icons-sprite.png?v=1.5") no-repeat -69px -19px;
+	position: absolute;
+	display: block;
+	overflow: hidden;
+	width: 13px;
+	height: 13px;
+	top: -29px;
+	right: 3px;
+	left: auto;
+}
+
+.dropzone .dz-preview.dz-file-preview .dz-image,
+.dropzone .dz-preview .dz-details .dz-filename span, .dropzone .dz-preview .dz-details .dz-size span,
+.dropzone .dz-preview .dz-image,
+.dropzone .dz-preview .dz-progress,
+.dropzone .dz-preview .dz-error-message {
+	border-radius: 0;
+}
+
+.dropzone .dz-preview .dz-error-message {
+	top: 127px;
+	left: -70px;
+	right: auto;
+	margin-left: 50%;
+	margin-right: auto;
+}
+
+.dropzone .dz-preview .dz-image,
+.dropzone .dz-default.dz-message {
+	width: 109px;
+	height: 109px;
+}
+.dropzone .dz-preview .dz-image img {
+	max-width: 100%;
+	max-height: 100%;
+}
+.dropzone .dz-preview .dz-progress .dz-upload {
+	border: 1px solid rgba(255, 255, 255, 0.9);
+}
+.dropzone {
+	min-height: 100px;
+	border: 1px dashed #cccdce;
+	background: #f7f8f9;
+	padding: 10px 10px 10px 10px;
+	overflow: auto; /* fix for overflow-x on body conflicting with sortable */
+}
+.dropzone.dz-drag-hover {
+	border: 1px dashed #777;
+	-webkit-box-shadow: 0 0 2px #777;
+	box-shadow: 0 0 2px #777;
+}
+.dropzone .dz-preview,
+.dropzone .dz-default.dz-message {
+	margin: 10px;
+	float: left;
+	z-index: 10;
+}
+.dropzone .dz-preview:hover {
+	z-index: 11;
+}
+.dropzone .dz-preview:hover .delete-this {
+	display: block;
+	z-index: 1001;
+	cursor: pointer;
+}
+.dropzone.dz-started .dz-message {
+	display: block;
+}
+.dropzone .dz-default.dz-message {
+	position: relative;
+	display: block;
+	left: 0px;
+	top: 0px;
+	background: #fff;
+	border: 1px dashed #cccdce;
+}
+.dropzone .dz-default.dz-message:before {
+	content: '';
+	background: url("../../images/drag_drop_picture.png") no-repeat center center;
+	position: absolute;
+	display: block;
+	overflow: hidden;
+	width: 90px;
+	height: 90px;
+	left: 50%;
+	margin-left: -45px;
+	right: auto;
+	margin-right: auto;
+	top: 50%;
+	margin-top: -45px;
+	bottom: auto;
+	margin-bottom: auto;
+	opacity: 0.5;
+}
+.dropzone .dz-default.dz-message:hover {
+	border: 1px dashed #777;
+}
+.dropzone .dz-default.dz-message:hover:before {
+	opacity: 1;
+}
+
+.dropzone.maxnrofpictures .dz-message {
+	display: none;
+}
+
+
+/* cover */
+
+#dropzone-jobcover.dropzone .dz-preview .dz-image {
+	width: 100%;
+	height: 115px;
+}
+
+#dropzone-jobcover.dropzone .dz-default.dz-message {
+	/*display: none;*/
+	width: calc(100% - 20px);
+	height: 115px;
+}
+
+#dropzone-jobcover.dropzone .dz-preview {
+	height: 115px;
+	width: calc(100% - 20px);
+	max-width: 700px;
+}
+
+#dropzone-jobcover.dropzone .dz-preview .dz-image img {
+	max-height: none;
+	width: 100%;
+	height: auto;
+	position: absolute;
+	left: 0;
+	top: 50%;
+	-webkit-transform: translateY(-50%);
+	-ms-transform: translateY(-50%);
+	transform: translateY(-50%);
+}
+
+#dropzone-jobcover.dropzone {
+	/*min-height: 157px;*/
+}
+
+
+/* RTL */
+
+body.rtl .dropzone .dz-preview,
+body.rtl .dropzone .dz-default.dz-message {
+	float: right;
+}
+
+/* Tablet and Mobile - 768 iPad and less */
+@media only screen and (max-width:991px) {
+	#dropzone-jobcover.dropzone .dz-preview .dz-image,
+	#dropzone-jobcover.dropzone .dz-default.dz-message,
+	#dropzone-jobcover.dropzone .dz-preview {
+		height: 122px;
+		min-height: 122px;
+	}
+}
+
+/* Mobile Landscape - 480 phones and less */
+@media only screen and (max-width:767px) {
+	#dropzone-jobcover.dropzone .dz-preview .dz-image,
+	#dropzone-jobcover.dropzone .dz-default.dz-message,
+	#dropzone-jobcover.dropzone .dz-preview {
+		height: 72px;
+		min-height: 72px;
+	}
+
+	#dropzone-jobcover.dropzone {
+		min-height: 114px;
+	}
+}
+
+/* Mobile - 300 or fluid */
+@media only screen and (max-width:479px) {
+	.dropzone {
+		padding: 6px;
+	}
+
+	#dropzone-jobcover.dropzone .dz-preview .dz-image,
+	#dropzone-jobcover.dropzone .dz-default.dz-message,
+	#dropzone-jobcover.dropzone .dz-preview {
+		height: 44px;
+		min-height: 44px;
+	}
+
+	#dropzone-jobcover.dropzone {
+		min-height: 84px;
+	}
+}

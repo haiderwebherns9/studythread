@@ -1,0 +1,590 @@
+<?php get_header();
+/*
+Template Name: Calender Features
+*/
+?>
+ <?php 
+	//Time Conversion Function
+	  function time_convertion($date_formate, $time_formate, $old_timezone, $new_timezone){
+		$dt_str=$date_formate.' '.$time_formate;	
+		$date = new DateTime($dt_str,  new DateTimeZone($old_timezone));
+       	
+		$date->setTimezone(new DateTimeZone($new_timezone));
+		$new_formate= $date->format('d-F-Y H:i');
+		return $new_formate;
+	  }
+    ?>
+	
+	<?php 
+	    global $current_user;
+		global $session;
+	    $current_user = wp_get_current_user();
+		$uid = $current_user->ID;
+	    $type=user($uid, 'wpjobster_user_type');
+		if($type == 'seller'){
+			$uid1 = $uid ;
+		}
+		if(($type == 'buyer') &&  isset($_GET['user_id'])) {
+			 $uid1=$_GET['user_id'];
+		}
+	 
+		//Select Time slot from table
+		global $wpdb;
+		//Teacher
+		$query1 = "
+		SELECT *
+		FROM `wp_87fsrr_calendar`
+		WHERE `teacher_id` =".$uid1;
+        $data= $wpdb->get_results($query1);
+		if(isset($_GET['time_zone']))
+		{
+			$tme_zn = $_GET['time_zone'];
+		}else{
+		   $tme_zn = 'Australia/Adelaide';
+		}
+		$arr_date = array();
+		if(count($data) > 0)
+		{ 
+			foreach($data as $key => $val)
+			{
+			  $arr_date[] = time_convertion($val->cal_date, trim($val->cal_time), $val->cal_time_zone, $tme_zn);
+			}
+		}
+		
+		if($type == 'buyer') {
+			//Student 
+			$query2 = "
+			SELECT *
+			FROM `wp_87fsrr_calendar_stud`
+			WHERE `student_id` =".$uid;
+			$data1= $wpdb->get_results($query2);
+			
+			if(isset($_GET['time_zone']))
+			{
+				$tme_zn1 = $_GET['time_zone'];
+			}else{
+			   $tme_zn1 = 'Australia/Adelaide';
+			}
+			$arr_date1 = array();
+			if(count($data1) > 0)
+			{ 
+				foreach($data1 as $key1 => $val1)
+				{
+				  $arr_date1[] = time_convertion( trim($val1->scal_date), trim($val1->scal_time),  trim($val1->scal_time_zone), $tme_zn);
+				}
+			}
+			
+			}
+	    if(isset($_POST['confirm'])){
+		  //print_r($_POST);
+		  //Insert Time Slot into The Database For Teacher
+		  if($type=='seller'){
+			  
+		  $qry=$wpdb->query( $wpdb->prepare(
+				"INSERT INTO `wp_87fsrr_calendar` (`teacher_id`, `cal_time`, `cal_date`,`cal_time_zone`,`cal_day`) VALUES ( %d, %s, %s, %s, %s )",
+				array(
+					$_POST['teacher_id'],
+					trim($_POST['bokng_slot']),
+					$_POST['bokng_date'],
+					$_POST['bokng_tzone'],
+					$_POST['bokng_day']
+				)
+			));
+			if($qry){
+				echo '<h2 style="color:green">Your Selected Time Has Been Saved. Select Other Days and Time for Your Schedule. </h2>';
+			}
+		  }
+		  //Insert Time Slot in database for Student
+		  if($type=='buyer'){
+				// Passing array
+				$stud_data = array(
+					'teacher_id' => $_POST['teacher_id'],
+					'student_id' => $uid,
+					'job_id' => $_POST['job_id'],
+					'book_slot' => trim($_POST['bokng_slot']),
+					'book_date' => $_POST['bokng_date'],
+					'book_tzone' => $_POST['bokng_tzone'],
+					'book_day' => $_POST['bokng_day'],
+				);
+				$_SESSION['student']=$stud_data;
+		 ?>
+		    <script>
+			    location.href ="https://www.studythread.com/?jb_action=purchase_this&jobid=<?php echo $_POST['job_id'];?>";
+			</script>
+		 <?php
+		  }
+		}
+	?>
+	
+   <div class="entry-content-page">
+     <?php  include_once( 'timezone.php' );  ?>
+    <div class="calender_view">
+	    <div class="calendar_carusal" id="list_id">
+	    <ul >
+			<?php 
+			   if(!isset($_GET['order']))
+			   { $custom_date=date("Y-m-d");
+				  ?>
+				  <li>
+			     <h5> – TODAY – </h5>
+			    <?php 
+			   echo "<p class='day_full'>".date('l', strtotime($custom_date))."</p>";
+				echo "<p class='day'>".date('D', strtotime($custom_date))."</p>";
+				echo "<p class='date'>".date("F j", strtotime($custom_date))."</p>";
+				?>
+				<input type="hidden" class="date_formate" name="dt" value="<?php echo date("d-F-Y"); ?>">
+			 </li>
+				  <?php
+			   }else{
+				   $custom_date = $_GET['date'];
+			   }
+			   for($i=1;$i<8;$i++) {	
+			  
+                  if((($i != 7) && (!isset($_GET['date']))) || (isset($_GET['date']))){				   
+				   ?>
+			<li>
+				<?php 
+				if(($_GET['order']=='next') && isset($_GET['date'])) {	
+                   echo "<p class='day_full'>".date('l', strtotime('+'.$i.' days',strtotime($custom_date)))."</p>";				
+					echo "<p class='day'>".date('D', strtotime('+'.$i.' days',strtotime($custom_date)))."</p>";
+				    echo "<p class='date'>".date("F j", strtotime('+'.$i.' days',strtotime( $custom_date)))."</p>"; 
+                 ?>
+               <input type="hidden" class="date_formate" name="dt" value="<?php echo date("d-F-Y", strtotime('+'.$i.' days',strtotime($custom_date))); ?>">				 
+			  <?php			
+			     } elseif(($_GET['order']=='prev') && isset($_GET['date'])) {
+			        $j = 8-$i;
+					echo "<p class='day_full'>".date('l', strtotime('-'.$j.' days',strtotime( $custom_date)))."</p>";
+				    echo "<p class='day'>".date('D', strtotime('-'.$j.' days',strtotime( $custom_date)))."</p>";
+				    echo "<p class='date'>".date("F j", strtotime('-'.$j.' days',strtotime( $custom_date)))."</p>"; 
+					?>
+					<input type="hidden" class="date_formate" name="dt" value="<?php echo date("d-F-Y", strtotime('-'.$j.' days',strtotime($custom_date))); ?>">
+					<?php
+				} else {	 
+					echo "<p class='day_full'>".date('l', strtotime('+'.$i.' days',strtotime($custom_date)))."</p>";				
+			    	echo "<p class='day'>".date('D', strtotime('+'.$i.' days',strtotime($custom_date)))."</p>";
+				    echo "<p class='date'>".date("F j", strtotime('+'.$i.' days',strtotime($custom_date)))."</p>"; 
+					?>
+					<input type="hidden" class="date_formate" name="dt" value="<?php echo date("d-F-Y", strtotime('+'.$i.' days',strtotime($custom_date))); ?>">
+				<?php
+				}
+				
+				?>
+				
+			</li>
+				   <?php 
+			        }
+				   } 
+			?>
+        </ul>	
+            </div>		
+        <div class="control">
+		     <a class="prev" href="javascript:void(0);">Prev</a>
+			 <a class="next" href="javascript:void(0);">Next</a>
+        </div>		
+        </div>		 
+    </div>
+ 
+<script>
+    $(document).ready(function() {
+		
+		var dat=$('#list_id li:first-child').find('.date_formate').val();
+		var cur_date='<?php echo date("d-F-Y");?>';
+		if(dat == cur_date){
+		   $(".prev").css({"pointer-events": "none", "opacity": "0.5"});
+		} else {
+			$(".prev").css({"pointer-events": "inherit", "opacity": "1"});
+		}
+    $(document).on("click",".prev",function() {
+        var dt = $('.date_formate:eq(0)').val();
+       $('#list_id').load('https://www.studythread.com/calendar-feature/?date='+dt+'&order=prev #list_id ul',function(){
+        var dat=$('#list_id li:first-child').find('.date_formate').val();
+		var cur_date='<?php echo date("d-F-Y");?>';
+			if(dat == cur_date){
+				$( "<h5>__Today__</h5>" ).prependTo( "#list_id li:first-child" );
+			   $(".prev").css({"pointer-events": "none", "opacity": "0.5"});
+			} else {
+				$(".prev").css({"pointer-events": "inherit", "opacity": "1"});
+			}
+		});
+	});
+	 $(document).on("click",".next",function() {
+		var dt = $('.date_formate:eq(6)').val();
+       $('#list_id').load('https://www.studythread.com/calendar-feature/?date='+dt+'&order=next #list_id ul',function(){
+       var dat=$('#list_id li:first-child').find('.date_formate').val();
+		var cur_date='<?php echo date("d-F-Y");?>';
+		if(dat == cur_date){
+		   $(".prev").css({"pointer-events": "none", "opacity": "0.5"});
+		} else {
+			$(".prev").css({"pointer-events": "inherit", "opacity": "1"});
+		}
+	   });
+	});
+	 $(document).on("click","#list_id",function() {
+		  $("#cal_Modal").show();
+		  $(".cclose").click(function(){
+			  $(this).parents('#cal_Modal').fadeOut();
+		  });
+	   });
+	 $(document).on("click",".time_slot",function() {
+		//  var time_arr= jQuery.parseJSON($("#tm_arr").val());
+		  
+		  $(".time_slot").show("slow");
+		  $(this).hide();
+		 $(".btn_box").hide();
+		  $(this).next( ".btn_box" ).show("slow");
+		  var tm= $(this).next(".btn_box").find(".tm").text();
+		  $(".inp_tslot").val(tm);	
+	   });  
+	   
+	   $('#time_formt').change(function() {
+        if ($(this).prop('checked')) {
+			$(".formate_12").hide();
+            $(".formate_24").show();
+        }
+        else {
+            $(".formate_24").hide();
+            $(".formate_12").show();
+        }
+    });
+});
+</script>
+<?php    if($type=='buyer'){ ?>
+<script>
+$(document).ready(function() {
+	 
+$(document).on("click","#list_id li",function() {
+		      $('.formate_12 li').removeClass("tred");
+			  $('.formate_12 li').removeClass("tgreen");
+			  $('.formate_24 li').removeClass("tred");
+			  $('.formate_24 li').removeClass("tgreen");
+			  $('.formate_12 li').removeClass("sred");
+			  $('.formate_12 li').removeClass("sgreen");
+			  $('.formate_24 li').removeClass("sred");
+			  $('.formate_24 li').removeClass("sgreen");
+		  var fday=$(this).find(".day_full").text();
+		 var fdt=$(this).find(".date_formate").val();
+		 var tz=$(".searchable-select-holder").text();
+		
+		  $("#day").text(fday);
+		  $("#dte").text(fdt);
+		  $("#tz").text(tz);
+		  $(".inp_day").val(fday);
+		  $(".inp_date").val(fdt);
+		  $(".inp_tzone").val(tz);
+		  $.ajax({
+			  method: "POST",
+			  url: "https://www.studythread.com/calendar_ajax.php",			
+			  data: { arrdata: '<?php echo json_encode($arr_date); ?>', date_for : fdt}
+			})
+			  .done(function( msg ) {
+				var jsn_data=  jQuery.parseJSON(msg);
+				  
+				 for(var i =0 ; i<jsn_data.length; i++)
+				 {  
+					  if(jsn_data[i] == true){
+					      $('.formate_12 li').eq(i).addClass('tgreen');
+						  $('.formate_24 li').eq(i).addClass('tgreen');
+					  }else{
+						 $('.formate_12 li').eq(i).addClass('tred');
+						 $('.formate_24 li').eq(i).addClass('tred');
+					  }
+				 }
+			  });
+			   $.ajax({
+			  method: "POST",
+			  url: "https://www.studythread.com/calendar_ajax.php",			
+			  data: { arrdata: '<?php echo json_encode($arr_date1); ?>', date_for : fdt}
+			})
+			  .done(function( msg ) {
+				var jsn_data=  jQuery.parseJSON(msg);
+				  
+				 for(var i =0 ; i<jsn_data.length; i++)
+				 {  
+					  if(jsn_data[i] == true){
+					      $('.formate_12 li').eq(i).addClass('sred');
+						  $('.formate_24 li').eq(i).addClass('sred');
+					  }else{
+						 $('.formate_12 li').eq(i).addClass('sgreen');
+						 $('.formate_24 li').eq(i).addClass('sgreen');
+					  }
+				 }
+			  });
+	   });
+	});
+</script>
+<?php }else{ ?>
+<script>
+$(document).ready(function() {
+	
+$(document).on("click","#list_id li",function() {
+		      $('.formate_12 li').removeClass("tred");
+			  $('.formate_12 li').removeClass("tgreen");
+			  $('.formate_24 li').removeClass("tred");
+			  $('.formate_24 li').removeClass("tgreen");		
+		  var fday=$(this).find(".day_full").text();
+		 var fdt=$(this).find(".date_formate").val();
+		 var tz=$(".searchable-select-holder").text();
+		
+		  $("#day").text(fday);
+		  $("#dte").text(fdt);
+		  $("#tz").text(tz);
+		  $(".inp_day").val(fday);
+		  $(".inp_date").val(fdt);
+		  $(".inp_tzone").val(tz);
+		  $.ajax({
+			  method: "POST",
+			  url: "https://www.studythread.com/calendar_ajax.php",			
+			  data: { arrdata: '<?php echo json_encode($arr_date); ?>', date_for : fdt}
+			})
+			  .done(function( msg ) {
+				var jsn_data=  jQuery.parseJSON(msg);
+				  
+				 for(var i =0 ; i<jsn_data.length; i++)
+				 {  
+					  if(jsn_data[i] == true){
+					      $('.formate_12 li').eq(i).addClass('tred');
+						  $('.formate_24 li').eq(i).addClass('tred');
+					  }else{
+						 $('.formate_12 li').eq(i).addClass('tgreen');
+						 $('.formate_24 li').eq(i).addClass('tgreen');
+					  }
+				 }
+			  });
+			  
+	   });
+	});
+</script>
+<?php } ?>
+<div class="calendar_popup">
+<div id="cal_Modal" class="jmodal">
+  <!-- Modal content -->
+  <div class="jmodal-content">
+  <span class="cclose">&times;</span>
+    <div class="jmodal-body">
+	<input type="hidden"  id="tm_arr" value="<?php echo json_encode($arr_date); ?>"/> 	
+	
+	      <div class="time_zone">
+			     <p id="day"></p>
+				 <p id="dte"></p>
+				 <p id="tz"></p>
+		  </div>
+	      <div class="time_table">
+		   <div class="enb_wrap">
+		    <div class="slct_time">Select a Time</div>
+		    <div class="togle">
+			   am/pm
+				<label class="switch">
+				  <input type="checkbox" id="time_formt"> 
+				  <span class="slider round"></span>
+				</label>
+				24hr
+			</div>
+			</div>
+			<ul class="formate_12">
+			  <?php 
+			        for($t=9;$t<=11;$t++) { 
+					    $k=0;
+					     while($k<60){ 
+			  ?>
+				<li> 
+				    <form method="post">
+					    <input type="hidden" name="bokng_day" class="inp_day" value=""/>
+						<input type="hidden" name="bokng_date" class="inp_date" value=""/>
+						<input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+						<input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+						<input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+				       <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>
+                       <input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>        	
+                     
+					 <div class="time_slot">
+					       <?php 
+								 echo strlen($t)>1?$t:'0'.$t;
+								 echo ':';
+								 echo strlen($k)>1?$k:'0'.$k;
+					       ?>
+					  </div>     
+				     <div class="btn_box">
+				     <button class="tm">
+					 <?php 
+					 echo strlen($t)>1?$t:'0'.$t;
+					 echo ':';
+					 echo strlen($k)>1?$k:'0'.$k;
+					 echo " am";
+					 ?> </button>
+					 <button type="submit" class="cnf" name="confirm">Confirm</button>
+					 </div>
+					 </form>
+				</li>
+					<?php
+					       $k=$k+15;
+						 }
+			         } 
+				   ?>
+				   
+				   <li>
+				         <div class="js-meridiem meridiem" style="display: block;">
+						  <div class="text">noon</div>
+						</div>  
+				        <form method="post">
+						 <input type="hidden" name="bokng_day" class="inp_day" value=""/>
+						 <input type="hidden" name="bokng_date" class="inp_date" value=""/>
+						 <input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+						 <input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+				         <input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+						 <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>
+						 <input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>  
+						
+						<div class="time_slot">
+						     12:00
+						 </div>
+				        <div class="btn_box">
+							 <button class="tm">12:00 pm</button>
+							 <button type="submit" class="cnf" name="confirm">Confirm</button>
+						 </div>
+						</form> 
+				   </li>
+				   <li>
+				         <form method="post">
+							<input type="hidden" name="bokng_day" class="inp_day" value=""/>
+							<input type="hidden" name="bokng_date" class="inp_date" value=""/>
+							<input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+							<input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+				            <input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+                            <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>						
+						   <input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>  
+						  
+						<div class="time_slot">
+						     12:15
+						 </div>
+				        <div class="btn_box">
+							 <button class="tm">12:15 pm</button>
+							 <button type="submit" class="cnf" name="confirm">Confirm</button>
+						 </div>
+						 </form>
+				   </li>
+				   <li>
+				        <form method="post">
+							<input type="hidden" name="bokng_day" class="inp_day" value=""/>
+							<input type="hidden" name="bokng_date" class="inp_date" value=""/>
+							<input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+							<input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+				           <input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+						   <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>
+						   <input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>  
+						  
+						 <div class="time_slot">
+						     12:30
+						 </div>
+				        <div class="btn_box">
+							 <button class="tm">12:30 pm</button>
+							 <button type="submit" class="cnf" name="confirm">Confirm</button>
+						</div>	
+                        </form>						
+				   </li>
+				   <li>
+				     <form method="post">
+					    <input type="hidden" name="bokng_day" class="inp_day" value=""/>
+						<input type="hidden" name="bokng_date" class="inp_date" value=""/>
+						<input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+						<input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+				        <input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+						 <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>
+						<input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>  
+						
+						<div class="time_slot">
+						     12:45
+						 </div>
+				        <div class="btn_box">
+				         <button class="tm">12:45 pm</button>
+						 <button type="submit" class="cnf" name="confirm">Confirm</button>
+						</div> 
+					   </form>
+				   </li>
+				    <?php 
+			        for($t1=1;$t1<=4;$t1++) { 
+					    $k1=0;
+					     while($k1<60){ 
+			  ?>
+				<li>
+				   <form method="post">
+					    <input type="hidden" name="bokng_day" class="inp_day" value=""/>
+						<input type="hidden" name="bokng_date" class="inp_date" value=""/>
+						<input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+						<input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+				        <input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+					   <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>
+					   <input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>  
+					   
+					<div class="time_slot">
+					 <?php 
+					 echo strlen($t1)>1?$t1:'0'.$t1;
+					 echo ':';
+					 echo strlen($k1)>1?$k1:'0'.$k1;
+					 ?>
+					</div>
+				    <div class="btn_box">
+				     <button class="tm">
+					 <?php 
+					 echo strlen($t1)>1?$t1:'0'.$t1;
+					 echo ':';
+					 echo strlen($k1)>1?$k1:'0'.$k1;
+					 echo " pm";
+					 ?> </button>
+					 <button type="submit" class="cnf" name="confirm">Confirm</button>
+					 </div>
+					 </form>
+				</li>
+					<?php
+					       $k1=$k1+15;
+						 }
+			         } 
+				   ?>
+			</ul>
+			<ul class="formate_24">
+			  <?php 
+			        for($t=9;$t<=16;$t++) { 
+					    $k=0;
+					     while($k<60){ 
+			  ?>
+				<li> 
+				    <form method="post">
+						 <input type="hidden" name="bokng_day" class="inp_day" value=""/>
+						<input type="hidden" name="bokng_date" class="inp_date" value=""/>
+						<input type="hidden" name="bokng_tzone" class="inp_tzone" value=""/>
+						<input type="hidden" name="bokng_tformate" class="inp_tf" value=""/>
+				        <input type="hidden" name="bokng_slot" class="inp_tslot" value=""/>
+					    <input type="hidden" name="job_id" class="inp_job" value="<?php if(isset($_GET['job_id'])){ echo $_GET['job_id']; }?>"/>
+					    <input type="hidden" name="teacher_id" class="teachr_id" value="<?php if(isset($_GET['user_id'])){echo $_GET['user_id'];}?>"/>  
+					   
+					  <div class="time_slot">
+					       <?php 
+								 echo strlen($t)>1?$t:'0'.$t;
+								 echo ':';
+								 echo strlen($k)>1?$k:'0'.$k;
+					       ?>
+					  </div>     
+				     <div class="btn_box">
+				     <button class="tm">
+					 <?php 
+					 echo strlen($t)>1?$t:'0'.$t;
+					 echo ':';
+					 echo strlen($k)>1?$k:'0'.$k;
+					 echo " am";
+					 ?> </button>
+					 <button type="submit" class="cnf" name="confirm">Confirm</button>
+					 </div>
+					 </form>
+				</li>
+					<?php
+					       $k=$k+15;
+						 }
+			         } 
+				   ?>
+				   
+			</ul>
+		  </div>
+	</div>
+  </div>
+</div>  
+</div>
+<?php get_footer(); ?>
